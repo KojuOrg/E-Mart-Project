@@ -31,6 +31,9 @@
 	<c:when test="${page eq 'contact'}">
 		<%@ include file="includes/contact.jsp" %>
 	</c:when>
+	<c:when test="${page eq 'userLogin'}">
+		<%@ include file="includes/userLogin.jsp" %>
+	</c:when>
 </c:choose>
   <!--================ Start footer Area  =================-->	
 	<%@ include file="includes/footer.jsp" %>

@@ -20,6 +20,10 @@ public class HomeController {
 	public ModelAndView contactPage() {
 		return new ModelAndView("index","page","contact");
 	}
+	@RequestMapping(value="/userLogin")
+	public ModelAndView userLoginPage() {
+		return new ModelAndView("index","page","userLogin");
+	}
 	/* Koju's Portion Ends */
 	
 	/* Unika's Portion Ends */
