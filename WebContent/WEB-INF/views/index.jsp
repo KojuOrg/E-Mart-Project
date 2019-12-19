@@ -17,12 +17,16 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/vendors/owl-carousel/owl.carousel.min.css">
 
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+
+<!--  other css -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--  -->
+
 </head>
 <body>
   <!--================ Start Header Menu Area =================-->
 	<%@ include file="includes/header.jsp" %>
 	<!--================ End Header Menu Area =================-->
-
   
 <c:choose>
 	<c:when test="${page eq 'mainBody'}">
