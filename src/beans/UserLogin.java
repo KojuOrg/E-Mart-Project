@@ -1,17 +1,17 @@
 package beans;
 
-public class AccountLogin {
+public class UserLogin {
 	private String userName;
 	private String userPass;
-	public AccountLogin() {
+	public UserLogin() {
 		this.userName = "";
 		this.userPass = "";
 	}
-	public AccountLogin(String userName, String userPass) {
+	public UserLogin(String userName, String userPass) {
 		this.userName = userName;
 		this.userPass = userPass;
 	}
-	public AccountLogin(AccountLogin usr) {
+	public UserLogin(UserLogin usr) {
 		this.userName = usr.userName;
 		this.userPass = usr.userPass;
 	}
