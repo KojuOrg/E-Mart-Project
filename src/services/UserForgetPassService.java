@@ -39,8 +39,8 @@ public class UserForgetPassService {
 	private void sendRecoveryCode() {
 		String host="smtp.gmail.com";
 		String port="587";
-		String sender="computer2073.2016@gmail.com";
-		String pwd="Dangerous@#$5658";
+		String sender="e42emart@gmail.com";
+		String pwd="Dangerous@123";
 		String messageBody = this.code+" is your Account Recovery code . If you have not requested Recovery Code then just ignore this email.";
 		// sets SMTP server properties
 		Properties properties = new Properties();
@@ -104,6 +104,7 @@ public class UserForgetPassService {
 			query.setString(0,this.email);
 			this.user = (User)query.uniqueResult();
 			this.user.setPwd(pwd);
+			this.user.setInvalidCount(0);
 			this.session.getTransaction().commit();
 			this.message.setStatus(false);
 			this.message.setMessage("Password Recovered Successfully.!!");

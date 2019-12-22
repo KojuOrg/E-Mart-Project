@@ -33,6 +33,8 @@ public class User {
 	private int numOfUploadedItem;
 	@Column(name="status")
 	private boolean status;
+	@Column(name="invalid_count")
+	private int invalidCount;
 	public User() {
 		this.id = 1;
 		this.fullName = "";
@@ -139,6 +141,12 @@ public class User {
 	}
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+	public int getInvalidCount() {
+		return invalidCount;
+	}
+	public void setInvalidCount(int invalidCount) {
+		this.invalidCount = invalidCount;
 	}
 	@Override
 	public String toString() {
