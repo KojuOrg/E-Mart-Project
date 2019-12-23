@@ -2,9 +2,7 @@
 	<div class="main_menu">
 		<nav class="navbar navbar-expand-lg navbar-light">
 			<div class="container">
-				<a class="navbar-brand logo_h" href="index.html"><img
-					src="${pageContext.request.contextPath}/resources/img/logo.png"
-					alt=""></a>
+				<a class="navbar-brand logo_h" href="index.html"><b><h3>E-Mart</h3></b></a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse"
 					data-target="#navbarSupportedContent"
 					aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -18,16 +16,19 @@
 						<li class="nav-item active"><a class="nav-link" href="index">Home</a></li>
 						<li class="nav-item submenu dropdown"><a href="#"
 							class="nav-link dropdown-toggle" data-toggle="dropdown"
-							role="button" aria-haspopup="true" aria-expanded="false">Shop</a>
+							role="button" aria-haspopup="true" aria-expanded="false">Product
+								Category</a>
 							<ul class="dropdown-menu">
 								<li class="nav-item"><a class="nav-link"
-									href="category.html">Shop Category</a></li>
+									href="category.html">Electronics</a></li>
 								<li class="nav-item"><a class="nav-link"
-									href="single-product.html">Product Details</a></li>
+									href="single-product.html">Computers</a></li>
 								<li class="nav-item"><a class="nav-link"
-									href="checkout.html">Product Checkout</a></li>
+									href="checkout.html">Mobiles</a></li>
 								<li class="nav-item"><a class="nav-link"
-									href="confirmation.html">Confirmation</a></li>
+									href="confirmation.html">Cosmetics</a></li>
+								<li class="nav-item"><a class="nav-link"
+									href="confirmation.html">Others</a></li>
 								<li class="nav-item"><a class="nav-link" href="cart.html">Shopping
 										Cart</a></li>
 							</ul></li>
