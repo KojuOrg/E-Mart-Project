@@ -116,6 +116,30 @@ public class HomeController {
 			return new ModelAndView("index","page","userLogin");
 		}
 	}
+	@RequestMapping(value="/electronics")
+	public ModelAndView electronicsPage() {
+		return new ModelAndView("index","page","electronics");
+	}
+	@RequestMapping(value="/computers")
+	public ModelAndView computersPage() {
+		return new ModelAndView("index","page","computers");
+	}
+	@RequestMapping(value="/mobiles")
+	public ModelAndView mobilesPage() {
+		return new ModelAndView("index","page","mobiles");
+	}
+	@RequestMapping(value="/clothes")
+	public ModelAndView clothesPage() {
+		return new ModelAndView("index","page","clothes");
+	}
+	@RequestMapping(value="/cosmetics")
+	public ModelAndView cosmeticsPage() {
+		return new ModelAndView("index","page","cosmetics");
+	}
+	@RequestMapping(value="/others")
+	public ModelAndView othersPage() {
+		return new ModelAndView("index","page","others");
+	}
 	/* Koju's Portion Ends */
 
 	/* Unika's Portion Ends */
