@@ -140,6 +140,10 @@ public class HomeController {
 	public ModelAndView othersPage() {
 		return new ModelAndView("index","page","others");
 	}
+	@RequestMapping(value="/singleProduct")
+	public ModelAndView singleProductPage() {
+		return new ModelAndView("index","page","singleProduct");
+	}
 	/* Koju's Portion Ends */
 
 	/* Unika's Portion Ends */

@@ -103,6 +103,9 @@
 		<c:when test="${page eq 'others'}">
 			<%@ include file="includes/category/others.jsp"%>
 		</c:when>
+		<c:when test="${page eq 'singleProduct'}">
+			<%@ include file="includes/singleProduct.jsp"%>
+		</c:when>
 	</c:choose>
 	<!--================ Start footer Area  =================-->
 	<%@ include file="includes/footer.jsp"%>
