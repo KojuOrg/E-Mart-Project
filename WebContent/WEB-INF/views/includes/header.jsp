@@ -20,17 +20,16 @@
 								Category</a>
 							<ul class="dropdown-menu">
 								<li class="nav-item"><a class="nav-link"
-									href="category.html">Electronics</a></li>
+									href="electronics">Electronics</a></li>
 								<li class="nav-item"><a class="nav-link"
-									href="single-product.html">Computers</a></li>
+									href="computers">Computers</a></li>
 								<li class="nav-item"><a class="nav-link"
-									href="checkout.html">Mobiles</a></li>
+									href="mobiles">Mobiles</a></li>
 								<li class="nav-item"><a class="nav-link"
-									href="confirmation.html">Cosmetics</a></li>
+									href="cosmetics">Cosmetics</a></li>
+								<li class="nav-item"><a class="nav-link" href="clothes">Clothes</a></li>
 								<li class="nav-item"><a class="nav-link"
-									href="confirmation.html">Others</a></li>
-								<li class="nav-item"><a class="nav-link" href="cart.html">Shopping
-										Cart</a></li>
+									href="others">Others</a></li>
 							</ul></li>
 						<li class="nav-item submenu dropdown"><a href="#"
 							class="nav-link dropdown-toggle" data-toggle="dropdown"

@@ -85,6 +85,27 @@
 		<c:when test="${page eq 'recoverCredentials'}">
 			<%@ include file="includes/user/recoverCredentials.jsp"%>
 		</c:when>
+		<c:when test="${page eq 'electronics'}">
+			<%@ include file="includes/category/electronics.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'computers'}">
+			<%@ include file="includes/category/computers.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'mobiles'}">
+			<%@ include file="includes/category/mobiles.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'clothes'}">
+			<%@ include file="includes/category/clothes.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'cosmetics'}">
+			<%@ include file="includes/category/cosmetics.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'others'}">
+			<%@ include file="includes/category/others.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'singleProduct'}">
+			<%@ include file="includes/singleProduct.jsp"%>
+		</c:when>
 	</c:choose>
 	<!--================ Start footer Area  =================-->
 	<%@ include file="includes/footer.jsp"%>
