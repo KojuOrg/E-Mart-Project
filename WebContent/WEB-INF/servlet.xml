@@ -28,13 +28,17 @@
 	<!-- Step 7: Resources for static folder to stores css file, java script, 
 		images -->
 	<resources mapping="/resources/**" location="/resources/" />
-
 	<!-- User defined bean -->
 	<!-- Beans added by Koju starts -->
 	<beans:bean class="beans.UserLogin"></beans:bean>
 	<beans:bean class="beans.Message">
 		<beans:constructor-arg value="false"></beans:constructor-arg>
 		<beans:constructor-arg value="defaultMessage"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean class="beans.Product"></beans:bean>
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- setting maximum upload size -->
+		<beans:property name="maxUploadSize" value="10000000000" />
 	</beans:bean>
 	<!-- Beans added by koju ends -->
 </beans:beans>

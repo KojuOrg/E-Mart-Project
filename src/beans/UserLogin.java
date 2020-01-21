@@ -1,5 +1,8 @@
 package beans;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserLogin {
 	private String userName;
 	private String userPass;

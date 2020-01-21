@@ -1,5 +1,8 @@
 package services;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,15 +26,15 @@ public class UserLoginService {
 		this.factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
 				.buildSessionFactory();
 		this.session = this.factory.getCurrentSession();
+		this.message = new Message();
 	}
 
 	public UserLoginService(UserLogin user) {
 		this.user = user;
-		this.message = new Message();
 		this.sessionInit();
 	}
 
-	public Message validateUser() {
+	public Message validateUser(HttpServletRequest request) {
 		try {
 			this.session.beginTransaction();
 			String HQL = "FROM User WHERE userName=? AND pwd=?";
@@ -57,6 +60,9 @@ public class UserLoginService {
 					this.tmpUser = (User) query.uniqueResult();
 					this.tmpUser.setInvalidCount(0);
 					this.session.getTransaction().commit();
+					HttpSession sess = request.getSession();
+					sess.setAttribute("userName",tmpUser.getUserName());
+					sess.setAttribute("userId",tmpUser.getUserId());
 					this.message.setStatus(false);
 					this.message.setMessage(this.tmpUser.getUserName());
 				}
@@ -86,6 +92,9 @@ public class UserLoginService {
 						this.tmpUser = (User) query.uniqueResult();
 						this.tmpUser.setInvalidCount(0);
 						this.session.getTransaction().commit();
+						HttpSession sess = request.getSession();
+						sess.setAttribute("userName",tmpUser.getUserName());
+						sess.setAttribute("userId",tmpUser.getUserId());
 						this.message.setStatus(false);
 						this.message.setMessage(this.tmpUser.getUserName());
 					}

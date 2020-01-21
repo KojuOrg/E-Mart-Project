@@ -5,49 +5,88 @@
 			<div class="col-lg-6">
 				<div class="owl-carousel owl-theme s_Product_carousel">
 					<div class="single-prd-item">
-						<img class="img-fluid" src="img/category/s-p1.jpg" alt="">
+						<img class="img-fluid"
+							src="data:image/png;image/jpg;image/jpeg;image/gif;base64,${product.photo1}"
+							alt="Image Error">
 					</div>
-					<!-- <div class="single-prd-item">
-							<img class="img-fluid" src="img/category/s-p1.jpg" alt="">
-						</div>
-						<div class="single-prd-item">
-							<img class="img-fluid" src="img/category/s-p1.jpg" alt="">
-						</div> -->
+					<div class="single-prd-item">
+						<img class="img-fluid"
+							src="data:image/png;image/jpg;image/jpeg;image/gif;base64,${product.photo2}"
+							alt="Image Error">
+					</div>
+					<div class="single-prd-item">
+						<img class="img-fluid"
+							src="data:image/png;image/jpg;image/jpeg;image/gif;base64,${product.photo3}"
+							alt="Image Error">
+					</div>
 				</div>
 			</div>
 			<div class="col-lg-5 offset-lg-1">
 				<div class="s_product_text">
-					<h3>Faded SkyBlu Denim Jeans</h3>
-					<h2>$149.99</h2>
-					<ul class="list">
-						<li><a class="active" href="#"><span>Category</span> :
-								Household</a></li>
-						<li><a href="#"><span>Availibility</span> : In Stock</a></li>
-					</ul>
-					<p>Mill Oil is an innovative oil filled radiator with the most
-						modern technology. If you are looking for something that can make
-						your interior look awesome, and at the same time give you the
-						pleasant warm feeling during the winter.</p>
-					<div class="product_count">
-						<label for="qty">Quantity:</label>
-						<button
-							onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-							class="increase items-count" type="button">
-							<i class="ti-angle-left"></i>
-						</button>
-						<input type="text" name="qty" id="sst" size="2" maxlength="12"
-							value="1" title="Quantity:" class="input-text qty">
-						<button
-							onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-							class="reduced items-count" type="button">
-							<i class="ti-angle-right"></i>
-						</button>
-						<a class="button primary-btn" href="#">Add to Cart</a>
-					</div>
-					<div class="card_area d-flex align-items-center">
-						<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-						<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
-					</div>
+					<h3>${product.productName}</h3>
+					<h2>Rs.${product.price}</h2>
+					<table class="table">
+						<tr>
+							<th>Category</th>
+							<td>${product.category}</td>
+						</tr>
+						<tr>
+							<th>Used For</th>
+							<td>${product.usedFor}</td>
+						</tr>
+						<tr>
+							<th>Condition</th>
+							<td>
+								<c:choose>
+									<c:when test="${product.productCondition eq 1}">
+										Normal
+									</c:when>
+									<c:when test="${product.productCondition eq 2}">
+										Good
+									</c:when>
+									<c:when test="${product.productCondition eq 3}">
+										Very Good
+									</c:when>
+									<c:when test="${product.productCondition eq 4}">
+										Excellent
+									</c:when>
+								</c:choose>
+							</td>
+						</tr>
+						<tr>
+							<th>Price Negotiable</th>
+							<td>
+								<c:choose>
+									<c:when test="${product.priceNegotiable eq true}">
+										Yes
+									</c:when>
+									<c:when test="${product.priceNegotiable eq false}">
+										No
+									</c:when>
+								</c:choose>
+							</td>
+						</tr>
+						<tr>
+							<th>Warranty Period</th>
+							<td>${product.warrantyPeriod}</td>
+						</tr>
+						<tr>
+							<th>Delivery Area</th>
+							<td>${product.deliveryArea}</td>
+						</tr>
+						<tr>
+							<th>Delivery Charges</th>
+							<td>Rs. ${product.deliveryCharges}</td>
+						</tr>
+						<tr>
+							<th>Uploaded In</th>
+							<td>${product.regDate}</td>
+						</tr>
+						<tr>
+							<th style="color:red">Expired In</th>
+							<td>${product.delDate}</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>
