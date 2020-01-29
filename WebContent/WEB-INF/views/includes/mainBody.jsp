@@ -1,3 +1,4 @@
+<%@ page import="java.util.Base64"%>
 <main class="site-main">
 
 	<!--================ Hero banner start =================-->
@@ -28,33 +29,17 @@
 	<!--================ Hero Carousel start =================-->
 	<section class="section-margin mt-0">
 		<div class="owl-carousel owl-theme hero-carousel">
+			<c:forEach items="${mobiles}" var="mobile">
 			<div class="hero-carousel__slide">
 				<img
-					src="${pageContext.request.contextPath}/resources/img/home/hero-slide1.png"
-					alt="" class="img-fluid"> <a href="#"
+					src="data:image/jpg;image/png;image/jpeg;image/gif;base64,${mobile.photo1}"
+					alt="Image Error" class="img-fluid" style="height:300px;width:auto;"> <a href="#"
 					class="hero-carousel__slideOverlay">
-					<h3>Wireless Headphone</h3>
+					<h3>${mobile.productName}</h3>
 					<p>Mobiles Item</p>
 				</a>
 			</div>
-			<div class="hero-carousel__slide">
-				<img
-					src="${pageContext.request.contextPath}/resources/img/home/hero-slide2.png"
-					alt="" class="img-fluid"> <a href="#"
-					class="hero-carousel__slideOverlay">
-					<h3>Wireless Headphone</h3>
-					<p>Mobiles Item</p>
-				</a>
-			</div>
-			<div class="hero-carousel__slide">
-				<img
-					src="${pageContext.request.contextPath}/resources/img/home/hero-slide3.png"
-					alt="" class="img-fluid"> <a href="#"
-					class="hero-carousel__slideOverlay">
-					<h3>Wireless Headphone</h3>
-					<p>Mobiles Item</p>
-				</a>
-			</div>
+			</c:forEach>
 		</div>
 	</section>
 	<!--================ Hero Carousel end =================-->

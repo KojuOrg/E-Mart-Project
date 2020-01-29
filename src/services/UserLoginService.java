@@ -1,18 +1,23 @@
 package services;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import beans.Message;
 import beans.User;
 import beans.UserLogin;
-
+@Service
 public class UserLoginService {
 	@Autowired
 	private UserLogin user;
+	@Autowired
 	private User tmpUser;
 	@Autowired
 	private Message message;
@@ -23,15 +28,17 @@ public class UserLoginService {
 		this.factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
 				.buildSessionFactory();
 		this.session = this.factory.getCurrentSession();
-	}
-
-	public UserLoginService(UserLogin user) {
-		this.user = user;
 		this.message = new Message();
+	}
+	public UserLoginService() {
+		this.sessionInit();
+	}
+	public void setUser(UserLogin user) {
+		this.user = user;
 		this.sessionInit();
 	}
 
-	public Message validateUser() {
+	public Message validateUser(HttpServletRequest request) {
 		try {
 			this.session.beginTransaction();
 			String HQL = "FROM User WHERE userName=? AND pwd=?";
@@ -57,6 +64,9 @@ public class UserLoginService {
 					this.tmpUser = (User) query.uniqueResult();
 					this.tmpUser.setInvalidCount(0);
 					this.session.getTransaction().commit();
+					HttpSession sess = request.getSession();
+					sess.setAttribute("userName",tmpUser.getUserName());
+					sess.setAttribute("userId",tmpUser.getUserId());
 					this.message.setStatus(false);
 					this.message.setMessage(this.tmpUser.getUserName());
 				}
@@ -86,6 +96,9 @@ public class UserLoginService {
 						this.tmpUser = (User) query.uniqueResult();
 						this.tmpUser.setInvalidCount(0);
 						this.session.getTransaction().commit();
+						HttpSession sess = request.getSession();
+						sess.setAttribute("userName",tmpUser.getUserName());
+						sess.setAttribute("userId",tmpUser.getUserId());
 						this.message.setStatus(false);
 						this.message.setMessage(this.tmpUser.getUserName());
 					}

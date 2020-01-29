@@ -6,8 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.stereotype.Component;
 @Entity
 @Table(name="user")
+@Component
 public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -147,6 +150,9 @@ public class User {
 	}
 	public void setInvalidCount(int invalidCount) {
 		this.invalidCount = invalidCount;
+	}
+	public int getUserId() {
+		return id;
 	}
 	@Override
 	public String toString() {

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.io.File"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
@@ -45,6 +46,9 @@
 
 .success {
 	color: green;
+}
+.select{
+	width:230px;
 }
 </style>
 </head>
@@ -105,6 +109,15 @@
 		</c:when>
 		<c:when test="${page eq 'singleProduct'}">
 			<%@ include file="includes/singleProduct.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'sellProduct'}">
+			<%@ include file="includes/user/sellProduct.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'sellProductInvalid'}">
+			<script>
+				swal("Login Required", "You must login First to sell your product.!!", "info");
+			</script>
+			<%@ include file="includes/userLogin.jsp" %>
 		</c:when>
 	</c:choose>
 	<!--================ Start footer Area  =================-->
