@@ -15,27 +15,29 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import beans.Message;
 import beans.User;
-
+@Service
 public class UserForgetPassService {
 	private String email;
 	@Autowired
 	private Message message;
+	@Autowired
 	private User user;
 	private SessionFactory factory;
 	private Session session;
 	private int code;
-
-	public UserForgetPassService(String email) {
-		this.email = email;
-		this.message = new Message();
+	
+	public UserForgetPassService() {
 		this.factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
 				.buildSessionFactory();
 		this.session = this.factory.getCurrentSession();
 	}
-
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	private void sendRecoveryCode() {
 		String host="smtp.gmail.com";
 		String port="587";

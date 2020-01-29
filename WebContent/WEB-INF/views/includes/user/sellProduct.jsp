@@ -1,3 +1,38 @@
+<script>
+	function addRows() {
+		var table = document.getElementById('specificationTable');
+		var rowCount = table.rows.length;
+		var row = table.insertRow(rowCount);
+		for (var i = 0; i <=1; i++) {
+			var cell = 'cell' + i;
+			cell = row.insertCell(i);
+			var copycel = document.getElementById('col' + i).innerHTML;
+			cell.innerHTML = copycel;
+		}
+	}
+	function delRows() {
+		var table = document.getElementById('specificationTable');
+		var rowCount = table.rows.length;
+		if (rowCount > '3') {
+			var row = table.deleteRow(rowCount-1);
+			rowCount--;
+		} else {
+			swal("Alert","There should be atleast one specification","info");
+		}
+	}
+	function setSpecification(){
+		var titleArray = document.getElementsByName('title');
+		var title = [];
+		var descriptionArray = document.getElementsByName('description');
+		var description = [];
+		for(var i=0,n=titleArray.length;i<n;i++){
+			title.push(titleArray[i].value);
+			description.push(descriptionArray[i].value);
+		}
+		document.getElementById('specification').value=title.join("^")+"%"+description.join("^");
+		return confirm('Confirm Uploading Product ? ');
+	} 
+</script>
 <section class="product_description_area">
 	<div class="container">
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -8,7 +43,8 @@
 		</ul>
 		<form:form action="sellingProduct" method="post"
 			modelAttribute="product" enctype="multipart/form-data"
-			class="form-contact form-review mt-3">
+			class="form-contact form-review mt-3"
+			onsubmit="return setSpecification();">
 			<div class="tab-content" id="myTabContent">
 				<div class="row">
 					<div class="col-lg-6">
@@ -42,7 +78,8 @@
 								</div>
 								<div class="col-lg-6">
 									<form:errors path="productCondition" cssClass="error"></form:errors>
-									<form:select path="productCondition" class="form-control select">
+									<form:select path="productCondition"
+										class="form-control select">
 										<option value="4">Excellent</option>
 										<option value="3">Very Good</option>
 										<option value="2">Good</option>
@@ -99,28 +136,57 @@
 								type="text" placeholder="Delivery Charges" />
 						</div>
 						<div class="form-group">
+							<h6>Product Specification :</h6>
+							<table class="table table-bordered" id="specificationTable">
+								<tr>
+									<th>Title</th>
+									<th>Description</th>
+								</tr>
+								<tr>
+									<th><input type="text" placeholder="Example : Height"
+										class="form-control" disabled /></th>
+									<th><input type="text" placeholder="4 inch"
+										class="form-control" disabled /></th>
+								</tr>
+								<tr>
+									<th id="col0"><input type="text" name="title"
+										class="form-control" placeholder="Title" /></th>
+									<th id="col1"><input type="text" name="description"
+										class="form-control" placeholder="Description" /></th>
+								</tr>
+							</table>
 							<form:errors path="productSpecification" cssClass="error"></form:errors>
-							<form:textarea path="productSpecification"
-								class="form-control different-control w-100" name="textarea"
-								id="textarea" cols="30" rows="15"
-								placeholder="Product Specification" />
+							<form:input path="productSpecification" type="hidden" id="specification" />
 						</div>
 						<div class="form-group text-center text-md-right mt-3">
+							<button class="button button-review" type="button"
+								onclick="addRows();">
+								<b> + Add Row</b>
+							</button>
+							<button class="button button-review" type="button"
+								onclick="delRows();">
+								<b> - Delete Row</b>
+							</button>
 							<button type="submit" class="button button--active button-review">Submit
 								Now</button>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<h6>Upload Product Pictures</h6>
-						<small style="color:green">To Make Your Product Picture Look Attractive, Please upload the Picture of size height=170px and width=230px</small>
+						<small style="color: green">To Make Your Product Picture
+							Look Attractive, Please upload the Picture of size height=170px
+							and width=230px</small>
 						<div class="form-group">
-							<input type="file" name="image1" onchange="firstImage(this);" required/>
+							<input type="file" name="image1" onchange="firstImage(this);"
+								required />
 						</div>
 						<div class="form-group">
-							<input type="file" name="image2" onchange="secondImage(this);" required/>
+							<input type="file" name="image2" onchange="secondImage(this);"
+								required />
 						</div>
 						<div class="form-group">
-							<input type="file" name="image3" onchange="thirdImage(this);" required/>
+							<input type="file" name="image3" onchange="thirdImage(this);"
+								required />
 						</div>
 						<div class="review_box">
 							<div class="row total_rate">

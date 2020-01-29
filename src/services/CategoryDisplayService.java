@@ -9,9 +9,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import beans.Product;
-
+@Service
 public class CategoryDisplayService {
 	@Autowired
 	private Product product;
@@ -19,13 +20,16 @@ public class CategoryDisplayService {
 	private Session session;
 	private List<Product> specificProducts;
 	private List<Product> allProducts;
-	public CategoryDisplayService() {
+	private void initValues() {
 		this.factory = new Configuration().configure("hibernate.cfg.xml")
 				.addAnnotatedClass(Product.class)
 				.buildSessionFactory();
 		this.session = this.factory.getCurrentSession();
 		this.allProducts = new ArrayList<Product>();
 		this.specificProducts = new ArrayList<Product>();
+	}
+	public CategoryDisplayService() {
+		this.initValues();
 	}
 	private void getAllProducts(){
 		try {
@@ -48,6 +52,7 @@ public class CategoryDisplayService {
 		Collections.reverse(this.specificProducts);
 	}
 	public List<Product> getProducts(String category) {
+		this.initValues();
 		this.getAllProducts();
 		this.getSpecificProducts(category);
 		return this.specificProducts;

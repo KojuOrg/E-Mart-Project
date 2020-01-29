@@ -8,14 +8,16 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import beans.Message;
 import beans.User;
 import beans.UserLogin;
-
+@Service
 public class UserLoginService {
 	@Autowired
 	private UserLogin user;
+	@Autowired
 	private User tmpUser;
 	@Autowired
 	private Message message;
@@ -28,8 +30,10 @@ public class UserLoginService {
 		this.session = this.factory.getCurrentSession();
 		this.message = new Message();
 	}
-
-	public UserLoginService(UserLogin user) {
+	public UserLoginService() {
+		this.sessionInit();
+	}
+	public void setUser(UserLogin user) {
 		this.user = user;
 		this.sessionInit();
 	}

@@ -7,6 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -15,12 +18,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import beans.Message;
 import beans.Product;
 import beans.User;
-
+@Service
 public class ProductService {
 	@Autowired 
 	private Product product;
@@ -30,19 +34,18 @@ public class ProductService {
 	private User user;
 	private SessionFactory factory;
 	private Session session;
+	private List<String> titles;
+	private List<String> descriptions;
 	private void initValues() {
 		this.factory = new Configuration().configure("hibernate.cfg.xml")
 				.addAnnotatedClass(Product.class)
 				.buildSessionFactory();
 		this.session = this.factory.getCurrentSession();
-		this.message = new Message();
+		//this.message = new Message();
 	}
-	public ProductService() {
+	public void setProduct(Product product) {
 		this.initValues();
-	}
-	public ProductService(Product product) {
 		this.product = product;
-		this.initValues();
 	}
 	public Message registerProduct(CommonsMultipartFile photo1,CommonsMultipartFile photo2,CommonsMultipartFile photo3,HttpSession session) {
 		try {
@@ -116,9 +119,11 @@ public class ProductService {
 	}
 	public Product getSingleProduct(int id) {
 		try {
+			this.initValues();
 			this.session.beginTransaction();
 			this.product = new Product();
 			this.product = (Product)(this.session.get(Product.class,id));
+			this.product.setNoOfViews(this.product.getNoOfViews()+1);
 			this.session.getTransaction().commit();
 			this.product.setPhoto1(Base64.getEncoder().encodeToString(this.product.getPhoto1File()));
 			this.product.setPhoto2(Base64.getEncoder().encodeToString(this.product.getPhoto2File()));
@@ -128,5 +133,15 @@ public class ProductService {
 			this.product = null;
 		}
 		return this.product;
+	}
+	public Map getProductSpecifications() {
+		String[] specification = this.product.getProductSpecification().split("%main%");
+		String[] titles = specification[0].split("%sub%");
+		String[] desc = specification[1].split("%sub%");
+		Map<String,String> spec = new HashMap<String,String>();
+		for(int i=0;i<titles.length;i++) {
+			spec.put(titles[i],desc[i]);
+		}
+		return spec;
 	}
 }

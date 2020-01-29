@@ -28,7 +28,7 @@
 						<div class="card-body">
 							<p>Mobiles</p>
 							<h4 class="card-product__title">
-								<a href="single-product.html">${product.productName}</a>
+								<a href="singleProduct?product=${product.id}">${product.productName}</a>
 							</h4>
 							<p class="card-product__price">Rs. ${product.price}</p>
 						</div>

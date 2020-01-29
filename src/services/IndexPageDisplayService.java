@@ -5,14 +5,14 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import beans.Product;
-
+@Service
 public class IndexPageDisplayService {
 	@Autowired
 	private Product product;
@@ -27,7 +27,7 @@ public class IndexPageDisplayService {
 	public IndexPageDisplayService() {
 		this.init();
 	}
-	public IndexPageDisplayService(Product product) {
+	public void setProduct(Product product) {
 		this.product = product;
 		this.init();
 	}
