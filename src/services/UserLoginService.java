@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import beans.Message;
 import beans.User;
 import beans.UserLogin;
+
 @Service
 public class UserLoginService {
 	@Autowired
@@ -30,9 +31,11 @@ public class UserLoginService {
 		this.session = this.factory.getCurrentSession();
 		this.message = new Message();
 	}
+
 	public UserLoginService() {
 		this.sessionInit();
 	}
+
 	public void setUser(UserLogin user) {
 		this.user = user;
 		this.sessionInit();
@@ -49,11 +52,11 @@ public class UserLoginService {
 			this.tmpUser = (User) query.uniqueResult();
 			this.session.getTransaction().commit();
 			if (this.tmpUser != null) {
-				if(this.tmpUser.getInvalidCount()>=5) {
+				if (this.tmpUser.getInvalidCount() >= 5) {
 					this.message.setStatus(true);
-					this.message.setMessage("Sorry Due to multiple invalid access your account has been temporarily locked.!! Please proceed through forget password method to recover your account.");
-				}
-				else {
+					this.message.setMessage(
+							"Sorry Due to multiple invalid access your account has been temporarily locked.!! Please proceed through forget password method to recover your account.");
+				} else {
 					this.sessionInit();
 					this.session.beginTransaction();
 					HQL = "FROM User WHERE userName=? AND pwd=?";
@@ -65,64 +68,29 @@ public class UserLoginService {
 					this.tmpUser.setInvalidCount(0);
 					this.session.getTransaction().commit();
 					HttpSession sess = request.getSession();
-					sess.setAttribute("userName",tmpUser.getUserName());
-					sess.setAttribute("userId",tmpUser.getId());
+					sess.setAttribute("userName", tmpUser.getUserName());
+					sess.setAttribute("userId", tmpUser.getId());
 					this.message.setStatus(false);
 					this.message.setMessage(this.tmpUser.getUserName());
 				}
 			} else {
 				this.sessionInit();
 				this.session.beginTransaction();
-				HQL = "FROM User WHERE email=? AND pwd=?";
+				HQL = "FROM User WHERE userName=?";
 				query = this.session.createQuery(HQL);
 				query.setString(0, this.user.getUserName());
-				query.setString(1, this.user.getUserPass());
 				this.tmpUser = new User();
 				this.tmpUser = (User) query.uniqueResult();
-				this.session.getTransaction().commit();
-				if (this.tmpUser != null) {
-					if(this.tmpUser.getInvalidCount()>=5) {
-						this.message.setStatus(true);
-						this.message.setMessage("Sorry Due to multiple invalid access, your account has been temporarily locked.!! Please proceed through forget password method to recover your account.");
-					}
-					else {
-						this.sessionInit();
-						this.session.beginTransaction();
-						HQL = "FROM User WHERE email=? AND pwd=?";
-						query = this.session.createQuery(HQL);
-						query.setString(0, this.user.getUserName());
-						query.setString(1, this.user.getUserPass());
-						this.tmpUser = new User();
-						this.tmpUser = (User) query.uniqueResult();
-						this.tmpUser.setInvalidCount(0);
-						this.session.getTransaction().commit();
-						HttpSession sess = request.getSession();
-						sess.setAttribute("userName",tmpUser.getUserName());
-						sess.setAttribute("userId",tmpUser.getId());
-						this.message.setStatus(false);
-						this.message.setMessage(this.tmpUser.getUserName());
-					}
-				} else {
-					this.sessionInit();
-					this.session.beginTransaction();
-					HQL = "FROM User WHERE email=? OR userName=?";
-					query = this.session.createQuery(HQL);
-					query.setString(0, this.user.getUserName());
-					query.setString(1, this.user.getUserName());
-					this.tmpUser = new User();
-					this.tmpUser = (User) query.uniqueResult();
-					if(this.tmpUser!=null && this.tmpUser.getInvalidCount()<5) {
-						this.tmpUser.setInvalidCount(this.tmpUser.getInvalidCount()+1);
-					}
-					this.session.getTransaction().commit();
-					this.message.setStatus(true);
-					this.message.setMessage("Invalid User or Password.!!!!");
+				if (this.tmpUser != null && this.tmpUser.getInvalidCount() < 5) {
+					this.tmpUser.setInvalidCount(this.tmpUser.getInvalidCount() + 1);
 				}
+				this.session.getTransaction().commit();
+				this.message.setStatus(true);
+				this.message.setMessage("Invalid User or Password.!!!!");
 			}
 		} catch (Exception er) {
 			this.message.setStatus(true);
 			this.message.setMessage("Internal Error ......!!!!");
-			System.out.println("Error : "+er.getMessage());
 		}
 		return this.message;
 	}

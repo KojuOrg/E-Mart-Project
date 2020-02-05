@@ -20,8 +20,8 @@
 						<div class="col-md-12 form-group">
 							<form:errors path="userName" cssClass="error"></form:errors>
 							<form:input path="userName" type="text" class="form-control"
-								id="name" placeholder="Username / Email" onfocus="this.placeholder = ''"
-								onblur="this.placeholder = 'Username / Email'" />
+								id="name" placeholder="Username" onfocus="this.placeholder = ''"
+								onblur="this.placeholder = 'Username'" />
 						</div>
 						<div class="col-md-12 form-group">
 							<form:errors path="userName" cssClass="error"></form:errors>
