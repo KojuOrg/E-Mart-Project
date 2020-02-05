@@ -1,16 +1,11 @@
 package beans;
 
-
-
-
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -34,7 +29,7 @@ public class User {
 	
 	@Column(name="user_name")
 	@NotEmpty(message="is required")
-	@UniqueUsername
+	//@UniqueUsername
 	private String userName;
 	
 	@Column(name="address")
@@ -58,7 +53,6 @@ public class User {
 	private String pwd;
 	
 	@Column(name="reg_date")
-	//@Temporal(TemporalType.TIMESTAMP)
 	private String regDate;
 	
 	@Column(name="del_date")
@@ -73,7 +67,6 @@ public class User {
 	@Column(name="invalid_count")
 	private int invalidCount;
 	
-
 	public int getInvalidCount() {
 		return invalidCount;
 	}

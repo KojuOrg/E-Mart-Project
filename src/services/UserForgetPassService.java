@@ -1,7 +1,9 @@
 package services;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -29,14 +31,18 @@ public class UserForgetPassService {
 	private SessionFactory factory;
 	private Session session;
 	private int code;
+	private String userName;
 	
-	public UserForgetPassService() {
+	private void initValues() {
 		this.factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
 				.buildSessionFactory();
 		this.session = this.factory.getCurrentSession();
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public UserForgetPassService() {
+		this.initValues();
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	private void sendRecoveryCode() {
 		String host="smtp.gmail.com";
@@ -78,19 +84,21 @@ public class UserForgetPassService {
 	}
 
 	public Message validateEmail(int code) {
+		this.initValues();
 		this.code = code;
 		try {
 			this.session.beginTransaction();
-			String HQL = "FROM User WHERE email=?";
+			String HQL = "FROM User WHERE userName=?";
 			Query query = this.session.createQuery(HQL);
-			query.setString(0, this.email);
-			this.user = (User) query.uniqueResult();
+			query.setString(0, this.userName);
+			this.user = (User)query.uniqueResult();
 			this.session.getTransaction().commit();
-			if (this.user != null) {
+			if (this.user!=null) {
+				this.email=this.user.getEmail();
 				this.sendRecoveryCode();
 			} else {
 				this.message.setStatus(true);
-				this.message.setMessage("Unrecognized Email Address.!!!!");
+				this.message.setMessage("Unrecognized  User Name");
 			}
 		} catch (Exception er) {
 			this.message.setStatus(true);
@@ -99,11 +107,12 @@ public class UserForgetPassService {
 		return this.message;
 	}
 	public Message recoverUserAccount(String pwd) {
+		this.initValues();
 		try {
 			this.session.beginTransaction();
-			String HQL = "FROM User WHERE email=?";
+			String HQL = "FROM User WHERE userName=?";
 			Query query = this.session.createQuery(HQL);
-			query.setString(0,this.email);
+			query.setString(0,this.userName);
 			this.user = (User)query.uniqueResult();
 			this.user.setPwd(pwd);
 			this.user.setInvalidCount(0);
@@ -113,6 +122,7 @@ public class UserForgetPassService {
 		}catch(Exception er) {
 			this.message.setStatus(true);
 			this.message.setMessage("Internal Error .!!!");
+			System.out.println("Error : "+er.getMessage());
 		}
 		return this.message;
 	}

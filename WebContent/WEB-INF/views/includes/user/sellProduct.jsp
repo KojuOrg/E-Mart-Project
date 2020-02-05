@@ -13,11 +13,11 @@
 	function delRows() {
 		var table = document.getElementById('specificationTable');
 		var rowCount = table.rows.length;
-		if (rowCount > '3') {
+		if (rowCount > '4') {
 			var row = table.deleteRow(rowCount-1);
 			rowCount--;
 		} else {
-			swal("Alert","There should be atleast one specification","info");
+			swal("Alert","There should be atleast two specification","info");
 		}
 	}
 	function setSpecification(){
@@ -29,7 +29,7 @@
 			title.push(titleArray[i].value);
 			description.push(descriptionArray[i].value);
 		}
-		document.getElementById('specification').value=title.join("^")+"%"+description.join("^");
+		document.getElementById('specification').value=title.join("%sub%")+"%main%"+description.join("%sub%");
 		return confirm('Confirm Uploading Product ? ');
 	} 
 </script>
@@ -154,6 +154,12 @@
 									<th id="col1"><input type="text" name="description"
 										class="form-control" placeholder="Description" /></th>
 								</tr>
+								<tr>
+									<th id="col0"><input type="text" name="title"
+										class="form-control" placeholder="Title" /></th>
+									<th id="col1"><input type="text" name="description"
+										class="form-control" placeholder="Description" /></th>
+								</tr>
 							</table>
 							<form:errors path="productSpecification" cssClass="error"></form:errors>
 							<form:input path="productSpecification" type="hidden" id="specification" />
@@ -177,16 +183,13 @@
 							Look Attractive, Please upload the Picture of size height=170px
 							and width=230px</small>
 						<div class="form-group">
-							<input type="file" name="image1" onchange="firstImage(this);"
-								required />
+							<input type="file" name="firstPhoto" onchange="firstImage(this);"/>
 						</div>
 						<div class="form-group">
-							<input type="file" name="image2" onchange="secondImage(this);"
-								required />
+							<input type="file" name="secondPhoto" onchange="secondImage(this);"/>
 						</div>
 						<div class="form-group">
-							<input type="file" name="image3" onchange="thirdImage(this);"
-								required />
+							<input type="file" name="thirdPhoto" onchange="thirdImage(this);" />
 						</div>
 						<div class="review_box">
 							<div class="row total_rate">

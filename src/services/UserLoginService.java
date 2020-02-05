@@ -122,6 +122,7 @@ public class UserLoginService {
 		} catch (Exception er) {
 			this.message.setStatus(true);
 			this.message.setMessage("Internal Error ......!!!!");
+			System.out.println("Error : "+er.getMessage());
 		}
 		return this.message;
 	}

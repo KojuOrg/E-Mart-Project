@@ -111,18 +111,18 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/emailValidation")
-	public ModelAndView validateCodePage(HttpServletRequest request, @RequestParam("userEmail") String email,
+	public ModelAndView validateCodePage(HttpServletRequest request, @RequestParam("userName") String userName,
 			Model model) {
 		int code = (int) (Math.random() * 99999 + 10000);
 		HttpSession session = request.getSession();
 		session.setAttribute("uniqueCode", code);
-		this.ufpserv.setEmail(email);
+		this.ufpserv.setUserName(userName);
 		this.message = this.ufpserv.validateEmail(code);
 		model.addAttribute("message", this.message);
 		if (this.message.isStatus()) {
 			return new ModelAndView("index", "page", "forgetPass");
 		} else {
-			session.setAttribute("userEmail", email);
+			session.setAttribute("user_name", userName);
 			return new ModelAndView("index", "page", "validationCode");
 		}
 	}
@@ -136,7 +136,7 @@ public class HomeController {
 			return new ModelAndView("index", "page", "recoverCredentials");
 		} else {
 			session.removeAttribute("uniqueCode");
-			session.removeAttribute("userEmail");
+			session.removeAttribute("user_name");
 			this.message.setStatus(true);
 			this.message.setMessage("Invalid Recovery Code.!!!");
 			model.addAttribute("message", this.message);
@@ -154,7 +154,7 @@ public class HomeController {
 		}
 		else {
 			HttpSession session = request.getSession();
-			this.ufpserv.setEmail(session.getAttribute("userEmail").toString());
+			this.ufpserv.setUserName(session.getAttribute("user_name").toString());
 			model.addAttribute("message",this.ufpserv.recoverUserAccount(pwd));
 			model.addAttribute("user",this.userLogin);
 			session.removeAttribute("userEmail");
@@ -208,9 +208,9 @@ public class HomeController {
 	}
 	@RequestMapping(value="/sellingProduct",method=RequestMethod.POST)
 	public ModelAndView sellProductProcess(@Valid @ModelAttribute("product") Product product,BindingResult result,
-			@RequestParam("image1") CommonsMultipartFile photo1,
-			@RequestParam("image2") CommonsMultipartFile photo2,
-			@RequestParam("image3") CommonsMultipartFile photo3,HttpSession session,Model model) {
+			@RequestParam("firstPhoto") CommonsMultipartFile photo1,
+			@RequestParam("secondPhoto") CommonsMultipartFile photo2,
+			@RequestParam("thirdPhoto") CommonsMultipartFile photo3,HttpSession session,Model model) {
 		if(result.hasErrors()) {
 			return new ModelAndView("index","page","sellProduct");
 		}
