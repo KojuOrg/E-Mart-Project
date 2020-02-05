@@ -66,7 +66,7 @@ public class UserLoginService {
 					this.session.getTransaction().commit();
 					HttpSession sess = request.getSession();
 					sess.setAttribute("userName",tmpUser.getUserName());
-					sess.setAttribute("userId",tmpUser.getUserId());
+					sess.setAttribute("userId",tmpUser.getId());
 					this.message.setStatus(false);
 					this.message.setMessage(this.tmpUser.getUserName());
 				}
@@ -98,7 +98,7 @@ public class UserLoginService {
 						this.session.getTransaction().commit();
 						HttpSession sess = request.getSession();
 						sess.setAttribute("userName",tmpUser.getUserName());
-						sess.setAttribute("userId",tmpUser.getUserId());
+						sess.setAttribute("userId",tmpUser.getId());
 						this.message.setStatus(false);
 						this.message.setMessage(this.tmpUser.getUserName());
 					}

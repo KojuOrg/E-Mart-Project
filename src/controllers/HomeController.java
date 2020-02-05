@@ -1,5 +1,9 @@
 package controllers;
 
+import java.util.UUID;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -15,20 +19,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import beans.Email;
 import beans.Message;
 import beans.Product;
+import beans.User;
 import beans.UserLogin;
 import services.CategoryDisplayService;
+import services.EmailValidation;
 import services.GetUserService;
 import services.IndexPageDisplayService;
 import services.ProductService;
+import services.SendValidationCode;
 import services.UserForgetPassService;
 import services.UserLoginService;
+import services.UserRegister;
 
 @Controller
 public class HomeController {
 	@Autowired
-	private UserLogin user;
+	private UserLogin userLogin;
 	@Autowired
 	private Message message;
 	@Autowired 
@@ -45,6 +54,18 @@ public class HomeController {
 	private UserForgetPassService ufpserv;
 	@Autowired
 	private GetUserService guserv;
+	
+	
+	@Autowired
+	private User user;
+	@Autowired
+	private Email email;
+	@Autowired
+	private UserRegister urserv;
+	@Autowired
+	private EmailValidation evserv;
+	@Autowired
+	private SendValidationCode svcserv;
 	// Request Mapping for Main Interface Starts
 	/* Koju's Protion Starts */
 	@RequestMapping(value = "/")
@@ -67,7 +88,7 @@ public class HomeController {
 	@RequestMapping(value = "/userLogin")
 	public ModelAndView userLoginPage(Model model) {
 		//model.addAttribute("user", new UserLogin());
-		model.addAttribute("user", this.user);
+		model.addAttribute("user", this.userLogin);
 		return new ModelAndView("index", "page", "userLogin");
 	}
 
@@ -119,7 +140,7 @@ public class HomeController {
 			this.message.setStatus(true);
 			this.message.setMessage("Invalid Recovery Code.!!!");
 			model.addAttribute("message", this.message);
-			model.addAttribute("user",this.user);
+			model.addAttribute("user",this.userLogin);
 			return new ModelAndView("index", "page", "userLogin");
 		}
 	}
@@ -135,7 +156,7 @@ public class HomeController {
 			HttpSession session = request.getSession();
 			this.ufpserv.setEmail(session.getAttribute("userEmail").toString());
 			model.addAttribute("message",this.ufpserv.recoverUserAccount(pwd));
-			model.addAttribute("user",this.user);
+			model.addAttribute("user",this.userLogin);
 			session.removeAttribute("userEmail");
 			return new ModelAndView("index","page","userLogin");
 		}
@@ -177,7 +198,7 @@ public class HomeController {
 	@RequestMapping(value="/sellProduct")
 	public ModelAndView productSellingPage(HttpServletRequest request,Model model) {
 		if(request.getSession().getAttribute("userName")==null){
-			model.addAttribute("user", this.user);
+			model.addAttribute("user", this.userLogin);
 			return new ModelAndView("index","page","sellProductInvalid");
 		}
 		else {
@@ -224,6 +245,51 @@ public class HomeController {
 	/* Koju's Portion Ends */
 
 	/* Unika's Portion Ends */
+	@RequestMapping(value = "/register")
+	public ModelAndView registerPage(Model userModel) {
+		//userModel.addAttribute("user", new User());
+		userModel.addAttribute("user", this.user);
+		return new ModelAndView("index", "page", "register");
+	}
+
+	@RequestMapping(value = "/processRegister")
+	public ModelAndView processForm(@Valid @ModelAttribute("user") User theUser, BindingResult thebindingresult, Model model) throws AddressException, MessagingException {
+		if (thebindingresult.hasErrors()) {
+			// Redirect to form
+			return new ModelAndView("index", "page", "register");
+		} else {
+			 message = urserv.register(theUser);
+			//message=new UserRegister(theUser).register();
+			//model.addAttribute("message", message);
+			if (message.isStatus()) {
+				return new ModelAndView("index", "page", "register");
+			} else {
+				
+				//Email email=new Email();
+				email.setUserId(theUser.getId());
+				email.setEmail(theUser.getEmail());
+				email.setCode(UUID.randomUUID().toString());
+				svcserv.sendEmail1(email);
+				model.addAttribute("email", email);
+				return new ModelAndView("index", "page", "confirmEmail");
+			}
+		}
+	}
+	
+	
+	
+	@RequestMapping("/confirmYourEmail")
+	public ModelAndView enableAccount(@ModelAttribute("email") Email theEmail, Model model) {
+		 message = evserv.confirmEmail(theEmail);
+		if (message.isStatus()) {
+			model.addAttribute("user", this.user);
+			//model.addAttribute("user", new User());
+			return new ModelAndView("index", "page", "register");
+		} else {
+			return new ModelAndView("index", "page", "mainBody");
+		}
+		
+	}
 	/* Unika's Portion Ends */
 
 	/* Sandesh's Portion Ends */

@@ -119,6 +119,13 @@
 			</script>
 			<%@ include file="includes/userLogin.jsp" %>
 		</c:when>
+		
+		<c:when test="${page eq 'register'}">
+			<%@ include file="includes/register.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'confirmEmail'}">
+			<%@ include file="includes/confirmEmail.jsp"%>
+		</c:when>
 	</c:choose>
 	<!--================ Start footer Area  =================-->
 	<%@ include file="includes/footer.jsp"%>

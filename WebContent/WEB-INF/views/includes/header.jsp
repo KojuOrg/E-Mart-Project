@@ -44,7 +44,7 @@
 							<ul class="dropdown-menu">
 								<li class="nav-item"><a class="nav-link" href="userLogin">Login</a></li>
 								<li class="nav-item"><a class="nav-link"
-									href="register.html">Register</a></li>
+									href="register">Register</a></li>
 							</ul></li>
 						<%
 							String name;

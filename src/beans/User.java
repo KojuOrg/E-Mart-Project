@@ -1,56 +1,87 @@
 package beans;
 
+
+
+
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.springframework.stereotype.Component;
+
+@Component
 @Entity
 @Table(name="user")
-@Component
 public class User {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="user_id")
+	
+	@Id //primary key
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //auto increment
+	@Column(name ="user_id")
 	private int id;
+	
 	@Column(name="full_name")
+	@NotEmpty(message="is required")
 	private String fullName;
+	
 	@Column(name="user_name")
+	@NotEmpty(message="is required")
+	@UniqueUsername
 	private String userName;
+	
 	@Column(name="address")
+	@NotEmpty(message="is required")
 	private String address;
+	
 	@Column(name="email")
+	@NotEmpty(message="is required")
+	@Email
 	private String email;
+	
 	@Column(name="contact_num")
+	@NotEmpty(message="is required")
+	@Size(min=10, max=10, message="invalid format")
+	@Pattern(regexp="^[0-9]*$")
 	private String contactNum;
+	
 	@Column(name="password")
+	@NotEmpty(message="is required")
+	@Size(min=7, message="length must be atleast 7 characters")
 	private String pwd;
+	
 	@Column(name="reg_date")
+	//@Temporal(TemporalType.TIMESTAMP)
 	private String regDate;
+	
 	@Column(name="del_date")
 	private String delDate;
+	
 	@Column(name="num_of_uploaded_items")
 	private int numOfUploadedItem;
+	
 	@Column(name="status")
 	private boolean status;
+	
 	@Column(name="invalid_count")
 	private int invalidCount;
-	public User() {
-		this.id = 1;
-		this.fullName = "";
-		this.userName = "";
-		this.address = "";
-		this.email = "";
-		this.contactNum = "";
-		this.pwd = "";
-		this.regDate = "";
-		this.delDate = "";
-		this.numOfUploadedItem = 0;
-		this.status = false;
+	
+
+	public int getInvalidCount() {
+		return invalidCount;
 	}
+
+	public void setInvalidCount(int invalidCount) {
+		this.invalidCount = invalidCount;
+	}
+
 	public User(int id, String fullName, String userName, String address, String email, String contactNum, String pwd,
 			String regDate, String delDate, int numOfUploadedItem, boolean status) {
 		this.id = id;
@@ -65,99 +96,129 @@ public class User {
 		this.numOfUploadedItem = numOfUploadedItem;
 		this.status = status;
 	}
-	public User(User usr) {
-		this.id = usr.id;
-		this.fullName = usr.fullName;
-		this.userName = usr.userName;
-		this.address = usr.address;
-		this.email = usr.email;
-		this.contactNum = usr.contactNum;
-		this.pwd = usr.pwd;
-		this.regDate = usr.regDate;
-		this.delDate = usr.delDate;
-		this.numOfUploadedItem = usr.numOfUploadedItem;
-		this.status = usr.status;
+	
+	public User() {
+		this.id = 0;
+		this.fullName = "";
+		this.userName = "";
+		this.address = "";
+		this.email = "";
+		this.contactNum = "";
+		this.pwd = "";
+		this.regDate = "1111-11-11";
+		this.delDate = "1111-11-11";
+		this.numOfUploadedItem = 0;
+		this.status = false;
 	}
 	
+	public User(User user) {
+		this.id = user.id;
+		this.fullName = user.fullName;
+		this.userName = user.userName;
+		this.address = user.address;
+		this.email = user.email;
+		this.contactNum = user.contactNum;
+		this.pwd = user.pwd;
+		this.regDate = user.regDate;
+		this.delDate = user.delDate;
+		this.numOfUploadedItem = user.numOfUploadedItem;
+		this.status = user.status;
+	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getFullName() {
 		return fullName;
 	}
+
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
+
 	public String getUserName() {
 		return userName;
 	}
+
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
 	public String getAddress() {
 		return address;
 	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	public String getContactNum() {
 		return contactNum;
 	}
+
 	public void setContactNum(String contactNum) {
 		this.contactNum = contactNum;
 	}
+
 	public String getPwd() {
 		return pwd;
 	}
+
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
+
 	public String getRegDate() {
 		return regDate;
 	}
+
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
+
 	public String getDelDate() {
 		return delDate;
 	}
+
 	public void setDelDate(String delDate) {
 		this.delDate = delDate;
 	}
+
 	public int getNumOfUploadedItem() {
 		return numOfUploadedItem;
 	}
+
 	public void setNumOfUploadedItem(int numOfUploadedItem) {
 		this.numOfUploadedItem = numOfUploadedItem;
 	}
+
 	public boolean isStatus() {
 		return status;
 	}
+
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	public int getInvalidCount() {
-		return invalidCount;
-	}
-	public void setInvalidCount(int invalidCount) {
-		this.invalidCount = invalidCount;
-	}
-	public int getUserId() {
-		return id;
-	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", fullName=" + fullName + ", userName=" + userName + ", address=" + address
 				+ ", email=" + email + ", contactNum=" + contactNum + ", pwd=" + pwd + ", regDate=" + regDate
 				+ ", delDate=" + delDate + ", numOfUploadedItem=" + numOfUploadedItem + ", status=" + status + "]";
 	}
+	
+	
 }
