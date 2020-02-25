@@ -6,11 +6,11 @@
 						<div class="single-footer-widget tp_widgets">
 							<h4 class="footer_title large_title">Our Mission</h4>
 							<p>
-								So seed seed green that winged cattle in. Gathering thing made fly you're no 
-								divided deep moved us lan Gathering thing us land years living.
+								To provide the platform for both Goods Seller and Buyer in such a way that the one who want to sell their product
+								 will upload the product on the page and will be viewed by the buyers.
 							</p>
 							<p>
-								So seed seed green that winged cattle in. Gathering thing made fly you're no divided deep moved 
+								And if Buyer is attracted by the product, then he/she may contact the Seller.
 							</p>
 						</div>
 					</div>
@@ -18,25 +18,23 @@
 						<div class="single-footer-widget tp_widgets">
 							<h4 class="footer_title">Quick Links</h4>
 							<ul class="list">
-								<li><a href="#">Home</a></li>
-								<li><a href="#">Shop</a></li>
-								<li><a href="#">Blog</a></li>
-								<li><a href="#">Product</a></li>
-								<li><a href="#">Brand</a></li>
-								<li><a href="#">Contact</a></li>
+								<li><a href="index">Home</a></li>
+								<li><a href="contact">Contact Us</a></li>
+								<li><a href="sellProduct">Sell Product</a></li>
+								<li><a href="userLogin">Login</a></li>
+								<li><a href="register">Register</a></li>
 							</ul>
 						</div>
 					</div>
 					<div class="col-lg-2 col-md-6 col-sm-6">
-						<div class="single-footer-widget instafeed">
-							<h4 class="footer_title">Gallery</h4>
-							<ul class="list instafeed d-flex flex-wrap">
-								<li><img src="${pageContext.request.contextPath}/resources/img/gallery/r1.jpg" alt=""></li>
-								<li><img src="${pageContext.request.contextPath}/resources/img/gallery/r2.jpg" alt=""></li>
-								<li><img src="${pageContext.request.contextPath}/resources/img/gallery/r3.jpg" alt=""></li>
-								<li><img src="${pageContext.request.contextPath}/resources/img/gallery/r5.jpg" alt=""></li>
-								<li><img src="${pageContext.request.contextPath}/resources/img/gallery/r7.jpg" alt=""></li>
-								<li><img src="${pageContext.request.contextPath}/resources/img/gallery/r8.jpg" alt=""></li>
+						<div class="single-footer-widget tp_widgets">
+							<h4 class="footer_title">Categories</h4>
+							<ul class="list">
+								<li><a href="electronics">Electronics</a></li>
+								<li><a href="computers">Computer</a></li>
+								<li><a href="mobiles">Mobiles</a></li>
+								<li><a href="clothes">Clothes</a></li>
+								<li><a href="others">Ohters</a></li>
 							</ul>
 						</div>
 					</div>
@@ -48,15 +46,16 @@
 									<span class="fa fa-location-arrow"></span>
 									Head Office
 								</p>
-								<p>123, Main Street, Your City</p>
+								<p>10, Libali, Bhaktapur</p>
 	
 								<p class="sm-head">
 									<span class="fa fa-phone"></span>
 									Phone Number
 								</p>
 								<p>
-									+123 456 7890 <br>
-									+123 456 7890
+									+977 9849675658 <br>
+									+977 9849823303 <br>
+									+977 9843304066
 								</p>
 	
 								<p class="sm-head">
@@ -64,23 +63,11 @@
 									Email
 								</p>
 								<p>
-									free@infoexample.com <br>
-									www.infoexample.com
+									e42emart@gmail.com
 								</p>
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="footer-bottom">
-			<div class="container">
-				<div class="row d-flex">
-					<p class="col-lg-12 footer-text text-center">
-						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
 				</div>
 			</div>
 		</div>
