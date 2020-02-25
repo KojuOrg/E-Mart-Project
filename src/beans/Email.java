@@ -16,7 +16,6 @@ public class Email {
 		this.verifyCode = verifyCode;
 		this.userId = userId;
 	}
-	
 	public Email() {
 		this.email = "";
 		this.code = "";

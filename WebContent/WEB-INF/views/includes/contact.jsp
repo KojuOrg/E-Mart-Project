@@ -19,9 +19,7 @@
 				<div class="media contact-info">
 					<span class="contact-info__icon"><i class="ti-headphone"></i></span>
 					<div class="media-body">
-						<h3>
-							9849675658
-						</h3>
+						<h3>9849675658</h3>
 						<p>Sun to Fri 9am to 6pm</p>
 					</div>
 				</div>
@@ -36,29 +34,32 @@
 				</div>
 			</div>
 			<div class="col-md-8 col-lg-9">
-				<form action="#/" class="form-contact contact_form"
-					action="contact_process.php" method="post" id="contactForm"
-					novalidate="novalidate">
+				<form:form action="userFeedback" class="form-contact contact_form"
+					method="post" id="contactForm" novalidate="novalidate" modelAttribute="userMessage">
 					<div class="row">
 						<div class="col-lg-5">
 							<div class="form-group">
-								<input class="form-control" name="name" id="name" type="text"
-									placeholder="Enter your name">
+								<form:errors path="fullName" cssClass="error" />
+								<form:input path="fullName" class="form-control" name="name" id="name" type="text"
+									placeholder="Enter your name" />
 							</div>
 							<div class="form-group">
-								<input class="form-control" name="email" id="email" type="email"
-									placeholder="Enter email address">
+								<form:errors path="email" cssClass="error" />
+								<form:input path="email" class="form-control" name="email" id="email" type="email"
+									placeholder="Enter email address" />
 							</div>
 							<div class="form-group">
-								<input class="form-control" name="subject" id="subject"
-									type="text" placeholder="Enter Subject">
+								<form:errors path="subject" cssClass="error" />
+								<form:input path="subject" class="form-control" name="subject" id="subject"
+									type="text" placeholder="Enter Subject" />
 							</div>
 						</div>
 						<div class="col-lg-7">
 							<div class="form-group">
-								<textarea class="form-control different-control w-100"
+								<form:errors path="feedback" cssClass="error"/>
+								<form:textarea path="feedback" class="form-control different-control w-100"
 									name="message" id="message" cols="30" rows="5"
-									placeholder="Enter Message"></textarea>
+									placeholder="Enter Message"></form:textarea>
 							</div>
 						</div>
 					</div>
@@ -67,7 +68,7 @@
 							class="button button--active button-contactForm">Send
 							Message</button>
 					</div>
-				</form>
+				</form:form>
 			</div>
 		</div>
 	</div>

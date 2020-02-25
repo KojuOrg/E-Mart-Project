@@ -20,12 +20,14 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import beans.Email;
+import beans.Feedback;
 import beans.Message;
 import beans.Product;
 import beans.User;
 import beans.UserLogin;
 import services.CategoryDisplayService;
 import services.EmailValidation;
+import services.FeedbackService;
 import services.GetUserService;
 import services.IndexPageDisplayService;
 import services.ProductService;
@@ -54,6 +56,10 @@ public class HomeController {
 	private UserForgetPassService ufpserv;
 	@Autowired
 	private GetUserService guserv;
+	@Autowired
+	private Feedback feedback;
+	@Autowired
+	private FeedbackService fbServ;
 	
 	
 	@Autowired
@@ -81,7 +87,8 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/contact")
-	public ModelAndView contactPage() {
+	public ModelAndView contactPage(Model model) {
+		model.addAttribute("userMessage",this.feedback);
 		return new ModelAndView("index", "page", "contact");
 	}
 
@@ -242,6 +249,18 @@ public class HomeController {
 		model.addAttribute("mobiles",this.ipds.getMobiles());
 		return new ModelAndView("index","page","mainBody");
 	}
+	@RequestMapping(value="/userFeedback",method=RequestMethod.POST)
+	public ModelAndView userMessageProcess(@Valid @ModelAttribute("userMessage") Feedback feedback,BindingResult result,Model model) {
+		if(result.hasErrors()) {
+			return new ModelAndView("index", "page", "contact");
+		}
+		else {
+			this.fbServ.setFeedbackObj(feedback);
+			model.addAttribute("message",this.fbServ.uploadFeedback());
+			model.addAttribute("userMessage",new Feedback());
+			return new ModelAndView("index", "page", "contact");
+		}
+	}
 	/* Koju's Portion Ends */
 
 	/* Unika's Portion Ends */
@@ -276,8 +295,6 @@ public class HomeController {
 		}
 	}
 	
-	
-	
 	@RequestMapping("/confirmYourEmail")
 	public ModelAndView enableAccount(@ModelAttribute("email") Email theEmail, Model model) {
 		 message = evserv.confirmEmail(theEmail);
@@ -291,35 +308,6 @@ public class HomeController {
 		
 	}
 	/* Unika's Portion Ends */
-
-	/* Sandesh's Portion Ends */
-	/* Sandesh's Portion Ends */
-
-	// Request Mapping for Main Interface Ends
-
-	// Request Mapping for User Interface Starts
-
-	/* Koju's Portion Ends */
-	/* Koju's Portion Ends */
-
-	/* Unika's Portion Ends */
-	/* Unika's Portion Ends */
-
-	/* Sandesh's Portion Ends */
-	/* Sandesh's Portion Ends */
-
-	// Request Mapping for User Interface Ends
-
-	// Request Mapping for Admin Pannel Starts
-
-	/* Koju's Portion Ends */
-	/* Koju's Portion Ends */
-
-	/* Unika's Portion Ends */
-	/* Unika's Portion Ends */
-
-	/* Sandesh's Portion Ends */
-	/* Sandesh's Portion Ends */
 
 	// Request Mapping for Admin Pannel Ends
 }
