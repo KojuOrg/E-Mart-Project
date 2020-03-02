@@ -1,3 +1,16 @@
+<c:choose>
+	<c:when test="${message.status eq true}">
+		<script type="text/javascript">
+			swal("Error Occured", "${message.message}", "error");
+		</script>
+	</c:when>
+	<c:when
+		test="${message.status eq false and message.message ne 'defaultMessage'}">
+		<script type="text/javascript">
+			swal("Success.!!!", "${message.message}", "success");
+		</script>
+	</c:when>
+</c:choose>
 <!--================Single Product Area =================-->
 <div class="product_image_area">
 	<div class="container">
@@ -103,6 +116,9 @@
 			<li class="nav-item"><a class="nav-link" id="contact-tab"
 				data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
 				aria-selected="false">Comments</a></li>
+			<li class="nav-item"><a class="nav-link" id="report-tab"
+				data-toggle="tab" href="#report" role="tab" aria-controls="report"
+				aria-selected="false">Report Product</a></li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade" id="seller" role="tabpanel"
@@ -110,38 +126,38 @@
 				<div class="table-responsive">
 					<table class="table">
 						<tbody>
-								<tr>
-									<td>
-										<h5>Name</h5>
-									</td>
-									<td>
-										<h5>${seller.fullName}</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Email</h5>
-									</td>
-									<td>
-										<h5>${seller.email}</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Contact No</h5>
-									</td>
-									<td>
-										<h5>${seller.contactNum}</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Registered Date</h5>
-									</td>
-									<td>
-										<h5>${seller.regDate}</h5>
-									</td>
-								</tr>
+							<tr>
+								<td>
+									<h5>Name</h5>
+								</td>
+								<td>
+									<h5>${seller.fullName}</h5>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h5>Email</h5>
+								</td>
+								<td>
+									<h5>${seller.email}</h5>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h5>Contact No</h5>
+								</td>
+								<td>
+									<h5>${seller.contactNum}</h5>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h5>Registered Date</h5>
+								</td>
+								<td>
+									<h5>${seller.regDate}</h5>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -256,6 +272,31 @@
 							</form>
 						</div>
 					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="report" role="tabpanel"
+				aria-labelledby="report-tab">
+				<div class="table-responsive">
+					<h4>
+						Your report will be recorded along with your ID. <span
+							style="color: red">[ Your report will be recorded if only
+							you are Logged in. ]</span>
+					</h4>
+					<h3>Problem with the Product ? State it down.</h3>
+					<form class="row contact_form" action="productReport" method="post"
+						id="contactForm" novalidate="novalidate"
+						onsubmit="return confirm('Confirm Sending Report ?')">
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="hidden" name="productId" value="${product.id}" />
+								<textarea id="name" name="report" cols="60" rows="8"></textarea>
+							</div>
+						</div>
+						<div class="col-md-12 text-left">
+							<button type="submit" value="submit" class="btn primary-btn">Submit
+								Now</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

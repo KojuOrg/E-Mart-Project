@@ -1,5 +1,7 @@
 package controllers;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -23,6 +25,7 @@ import beans.Email;
 import beans.Feedback;
 import beans.Message;
 import beans.Product;
+import beans.ProductReport;
 import beans.User;
 import beans.UserLogin;
 import services.CategoryDisplayService;
@@ -30,6 +33,7 @@ import services.EmailValidation;
 import services.FeedbackService;
 import services.GetUserService;
 import services.IndexPageDisplayService;
+import services.ProductReportService;
 import services.ProductService;
 import services.SendValidationCode;
 import services.UserForgetPassService;
@@ -60,6 +64,10 @@ public class HomeController {
 	private Feedback feedback;
 	@Autowired
 	private FeedbackService fbServ;
+	@Autowired
+	private ProductReport preport;
+	@Autowired
+	private ProductReportService prServ; 
 	
 	
 	@Autowired
@@ -260,6 +268,33 @@ public class HomeController {
 			model.addAttribute("userMessage",new Feedback());
 			return new ModelAndView("index", "page", "contact");
 		}
+	}
+	@RequestMapping(value="/productReport",method=RequestMethod.POST)
+	public ModelAndView productReportProcess(HttpServletRequest request,HttpSession session,@RequestParam("productId") String productId,@RequestParam("report") String report,Model model) {
+		this.product = this.pservice.getSingleProduct(Integer.parseInt(productId));
+		model.addAttribute("product",this.product);
+		model.addAttribute("specification",this.pservice.getProductSpecifications());
+		model.addAttribute("seller",this.guserv.getUser(this.product.getUserId()));
+		if(session.getAttribute("userName")==null) {
+			this.message.setStatus(true);
+			this.message.setMessage("You must login to Report product.!!!");
+			model.addAttribute("message",this.message);
+		}
+		else {
+			if(report==null || report.equals("")) {
+				this.message.setStatus(true);
+				this.message.setMessage("Please fill the report Box.!!");
+				model.addAttribute("message",this.message);
+			}
+			else {
+				this.preport.setProductId(Integer.parseInt(productId));
+				this.preport.setUserId(Integer.parseInt(session.getAttribute("userId").toString()));
+				this.preport.setRegDate(new SimpleDateFormat("yy/MM/dd").format(new Date()));
+				this.prServ.setReport(this.preport);
+				model.addAttribute("message",this.prServ.uploadReport());
+			}
+		}
+		return new ModelAndView("index","page","singleProduct");
 	}
 	/* Koju's Portion Ends */
 

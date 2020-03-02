@@ -15,13 +15,7 @@
 								alt="Image Error">
 							<ul class="card-product__imgOverlay">
 								<li><button>
-										<i class="ti-search"></i>
-									</button></li>
-								<li><button>
-										<i class="ti-shopping-cart"></i>
-									</button></li>
-								<li><button>
-										<i class="ti-heart"></i>
+										<a href="singleProduct?product=${product.id}"><i class="ti-search"></i></a>
 									</button></li>
 							</ul>
 						</div>

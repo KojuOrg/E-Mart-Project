@@ -64,6 +64,15 @@ public class AdminService {
 					this.message.setMessage(
 							"Account Locked Due to Multiple Invalid Access.!!! Go through Forget Password Method.");
 				} else {
+					this.initValues();
+					this.session.beginTransaction();
+					HQL = "FROM Admin WHERE userName=? AND pwd=?";
+					query = this.session.createQuery(HQL);
+					query.setString(0, this.admin.getUserName());
+					query.setString(1, this.admin.getPwd());
+					this.tmpAdmin = (Admin) query.uniqueResult();
+					this.tmpAdmin.setInvalidCount(0);
+					this.session.getTransaction().commit();
 					this.message.setStatus(false);
 					this.message.setMessage("Welcome Admin");
 				}

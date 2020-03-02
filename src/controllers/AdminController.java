@@ -149,4 +149,8 @@ public class AdminController {
 		model.addAttribute("userFeedback",this.fbServ.getAllFeedbacks());
 		return new ModelAndView("adminHome","page","feedback");
 	}
+	@RequestMapping(value="/reportedProducts")
+	public ModelAndView reportedProductsPage() {
+		return new ModelAndView("adminHome","page","reportedProducts");
+	}
 }
