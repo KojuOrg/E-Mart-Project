@@ -34,7 +34,7 @@ public class CategoryDisplayService {
 	private void getAllProducts(){
 		try {
 			this.session.beginTransaction();
-			this.allProducts = this.session.createQuery("FROM Product").list();
+			this.allProducts = this.session.createQuery("FROM Product WHERE status=0").list();
 			this.session.getTransaction().commit();
 		}catch(Exception er) {
 			System.out.println("Error : "+er.getMessage());

@@ -144,4 +144,21 @@ public class ProductService {
 		}
 		return spec;
 	}
+	public Message deleteProduct(int id) {
+		this.initValues();
+		try {
+			this.session.beginTransaction();
+			this.product = (Product)this.session.get(Product.class, id);
+			this.product.setStatus(true);
+			this.product.setDelDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+			this.session.getTransaction().commit();
+			this.message.setStatus(false);
+			this.message.setMessage("Product and its report deleted successfully.");
+		}catch(Exception er) {
+			System.out.println("Error Detected : "+er.getMessage());
+			this.message.setStatus(true);
+			this.message.setMessage("Internal errorr.!!!");
+		}
+		return this.message;
+	}
 }

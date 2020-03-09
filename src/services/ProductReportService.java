@@ -1,5 +1,8 @@
 package services;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -7,12 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import beans.Message;
+import beans.Product;
 import beans.ProductReport;
 
 @Service
 public class ProductReportService {
 	@Autowired
 	private ProductReport preport;
+	@Autowired
+	private Product product;
 	@Autowired
 	private Message message;
 	private SessionFactory factory;
@@ -44,14 +50,21 @@ public class ProductReportService {
 		}
 		return this.message;
 	}
-	public void checkProduct() {
+	public Message deleteReport(int id) {
 		this.initValues();
 		try {
 			this.session.beginTransaction();
-			String HQL = "SELECT id,userId,productName,";
+			this.preport = (ProductReport)this.session.get(ProductReport.class, id);
+			this.preport.setStatus(true);
+			this.preport.setDelDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 			this.session.getTransaction().commit();
+			this.message.setStatus(false);
+			this.message.setMessage("Product and ProductReport Removed.!!!");
 		}catch(Exception er) {
-			System.out.println("Error : "+er.getMessage());
+			System.out.println("Error Det : "+er.getMessage());
+			this.message.setStatus(true);
+			this.message.setMessage("Internal Error.!!!");
 		}
+		return this.message;
 	}
 }

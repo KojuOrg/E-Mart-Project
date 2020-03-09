@@ -13,7 +13,6 @@
 			<artifactId>spring-core</artifactId>
 			<version>5.1.9.RELEASE</version>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -62,13 +61,12 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.15</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>3.6.3.Final</version>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
@@ -147,10 +145,10 @@
 		</dependency>
 		<!-- Dependency Added by Koju Starts -->
 		<!-- Dependency Added by Koju Ends -->
-		
+
 		<!-- Dependency Added by Unika Starts -->
 		<!-- Dependency Added by Unika Ends -->
-		
+
 		<!-- Dependency Added by Sandesh Starts -->
 		<!-- Dependency Added by Sandesh Ends -->
 	</dependencies>

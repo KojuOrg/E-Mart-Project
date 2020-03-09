@@ -175,6 +175,9 @@
 					<c:when test="${page eq 'reportedProducts'}">
 						<%@ include file="includes/admin/reportedProducts.jsp"%>
 					</c:when>
+					<c:when test="${page eq 'singleReport'}">
+						<%@ include file="includes/admin/singleReport.jsp"%>
+					</c:when>
 				</c:choose>
 			</div>
 		</div>

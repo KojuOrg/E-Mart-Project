@@ -24,26 +24,28 @@
 		</tr>
 	</thead>
 	<tbody>
-		<c:set var="id" value="1" />
-		<c:forEach var="feedback" items="${userFeedback}">
+		<c:forEach var="product" items="${reportedProducts}">
 			<tr>
-				<td><c:out value="${id}" /></td>
-				<td>${feedback.fullName}</td>
-				<td>${feedback.email}</td>
-				<td>${feedback.regDate}</td>
-				<td>${feedback.subject}</td>
+				<td>${product[0]}</td>
+				<td>${product[1]}</td>
+				<td>${product[2]}</td>
+				<td>${product[3]}</td>
+				<td>${product[4]}</td>
 				<td>
 					<div class="row">
 						<div class="col-sm-6">
-							<button type="button" class="btn btn-success" data-toggle="modal"
-								data-target="#myModal${id}">
-								<small>View</small>
-							</button>
+							<form method="post" action="viewReportedProduct">
+								<input type="hidden" value="${product[5]}" name="reportId"/>
+								<button type="submit" class="btn btn-success">
+									<small>View</small>
+								</button>
+							</form>
 						</div>
 						<div class="col-sm-6">
-							<form method="post" action="deleteUserFeedback"
+							<form method="post" action="delReportedProduct"
 								onsubmit="return confirm('Confirm Deletion ?')">
-								<input type="hidden" name="id" value="${feedback.id}" />
+								<input type="hidden" name="reportId" value="${product[5]}" />
+								<input type="hidden" name="productId" value="${product[0]}" />
 								<button type="submit" class="btn btn-danger">
 									<small>Delete</small>
 								</button>
@@ -52,54 +54,6 @@
 					</div>
 				</td>
 			</tr>
-			<c:set var="id" value="${id+1}" />
 		</c:forEach>
 	</tbody>
 </table>
-
-<c:set var="modalId" value="1" />
-<c:forEach var="feedback" items="${userFeedback}">
-	<div class="modal fade" id="myModal${modalId}">
-		<div class="modal-dialog">
-			<div class="modal-content">
-
-				<!-- Modal Header -->
-				<div class="modal-header">
-					<h4 class="modal-title" style="color: green">Subject :
-						${feedback.subject}</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-
-				<!-- Modal body -->
-				<div class="modal-body">
-					<table>
-						<tr>
-							<th>From :</th>
-							<td>${feedback.fullName}</td>
-						</tr>
-						<tr>
-							<th>Email :</th>
-							<td style="color: blue">${feedback.email}</td>
-						</tr>
-						<tr>
-							<th>Date :</th>
-							<td>${feedback.regDate}</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<p>${feedback.feedback}</p>
-							</td>
-						</tr>
-					</table>
-				</div>
-
-				<!-- Modal footer -->
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-				</div>
-
-			</div>
-		</div>
-	</div>
-	<c:set var="modalId" value="${modalId+1}" />
-</c:forEach>

@@ -30,6 +30,7 @@ import beans.User;
 import beans.UserLogin;
 import services.CategoryDisplayService;
 import services.EmailValidation;
+import services.ExpiryCheck;
 import services.FeedbackService;
 import services.GetUserService;
 import services.IndexPageDisplayService;
@@ -68,6 +69,8 @@ public class HomeController {
 	private ProductReport preport;
 	@Autowired
 	private ProductReportService prServ; 
+	@Autowired
+	private ExpiryCheck expChk;
 	
 	
 	@Autowired
@@ -84,6 +87,7 @@ public class HomeController {
 	/* Koju's Protion Starts */
 	@RequestMapping(value = "/")
 	public ModelAndView indexPage(Model model) {
+		this.expChk.checkExpiryProducts();
 		model.addAttribute("mobiles",this.ipds.getMobiles());
 		return new ModelAndView("index", "page", "mainBody");
 	}
@@ -290,6 +294,7 @@ public class HomeController {
 				this.preport.setProductId(Integer.parseInt(productId));
 				this.preport.setUserId(Integer.parseInt(session.getAttribute("userId").toString()));
 				this.preport.setRegDate(new SimpleDateFormat("yy/MM/dd").format(new Date()));
+				this.preport.setReport(report);
 				this.prServ.setReport(this.preport);
 				model.addAttribute("message",this.prServ.uploadReport());
 			}
