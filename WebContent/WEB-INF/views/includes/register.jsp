@@ -7,7 +7,7 @@
 				<div class="login_box_img">
 					<div class="hover">
 						<h4>Already have an account?</h4>	
-						<a class="button button-account" href="login.html">Login Now</a>
+						<a class="button button-account" href="userLogin">Login Now</a>
 					</div>
 				</div>
 			</div>
@@ -50,7 +50,7 @@
 								<form:errors path="contactNum" cssClass="error"/>
 						</div>
 						<div class="col-md-12 form-group">
-							<form:input class="form-control" path="pwd"
+							<form:input type="password" class="form-control" path="pwd"
 								name="password" placeholder="Password"
 								onfocus="this.placeholder = ''"
 								onblur="this.placeholder = 'Password'"/>

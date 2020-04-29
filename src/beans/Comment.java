@@ -17,8 +17,8 @@ public class Comment {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="comment_id")
 	private int id;
-	@Column(name="user_id")
-	private int userId;
+	@Column(name="user_name")
+	private String userName;
 	@Column(name="product_id")
 	private int productId;
 	@Column(name="comment")
@@ -31,16 +31,16 @@ public class Comment {
 	private boolean status;
 	public Comment() {
 		this.id = 0;
-		this.userId = 0;
+		this.userName = "";
 		this.productId = 0;
 		this.comment = "";
 		this.regDate = "";
 		this.delDate = "1111-11-11";
 		this.status = false;
 	}
-	public Comment(int id, int userId, int productId, String comment, String regDate, String delDate, boolean status) {
+	public Comment(int id, String userName, int productId, String comment, String regDate, String delDate, boolean status) {
 		this.id = id;
-		this.userId = userId;
+		this.userName = userName;
 		this.productId = productId;
 		this.comment = comment;
 		this.regDate = regDate;
@@ -49,7 +49,7 @@ public class Comment {
 	}
 	public Comment(Comment cmt) {
 		this.id = cmt.id;
-		this.userId = cmt.userId;
+		this.userName = cmt.userName;
 		this.productId = cmt.productId;
 		this.comment = cmt.comment;
 		this.regDate = cmt.regDate;
@@ -62,11 +62,11 @@ public class Comment {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public int getProductId() {
 		return productId;
@@ -100,7 +100,7 @@ public class Comment {
 	}
 	@Override
 	public String toString() {
-		return "Comment [id=" + id + ", userId=" + userId + ", productId=" + productId + ", comment=" + comment
+		return "Comment [id=" + id + ", userName=" + userName + ", productId=" + productId + ", comment=" + comment
 				+ ", regDate=" + regDate + ", delDate=" + delDate + ", status=" + status + "]";
 	}
 }

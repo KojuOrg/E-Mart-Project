@@ -111,7 +111,7 @@
 							class="icon">
 					</div>
 					<div class="col-sm-10">
-						<a href="returnProduct"><button type="button"
+						<a href="reportedProducts"><button type="button"
 								class="btn btn-info menu">
 								<small><b>Reported Products</b></small>
 							</button></a>
@@ -171,6 +171,12 @@
 					</c:when>
 					<c:when test="${page eq 'feedback'}">
 						<%@ include file="includes/admin/feedback.jsp"%>
+					</c:when>
+					<c:when test="${page eq 'reportedProducts'}">
+						<%@ include file="includes/admin/reportedProducts.jsp"%>
+					</c:when>
+					<c:when test="${page eq 'singleReport'}">
+						<%@ include file="includes/admin/singleReport.jsp"%>
 					</c:when>
 				</c:choose>
 			</div>

@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -18,6 +20,10 @@ import beans.Admin;
 import beans.Message;
 import services.AdminService;
 import services.FeedbackService;
+import services.ProductReportService;
+import services.ProductService;
+import services.UserRetriveService;
+import services.ViewReportedProductsService;
 
 @Controller
 public class AdminController {
@@ -29,6 +35,14 @@ public class AdminController {
 	private Message message;
 	@Autowired
 	private FeedbackService fbServ;
+	@Autowired
+	private ProductReportService prServ;
+	@Autowired
+	private ViewReportedProductsService rpServ;
+	@Autowired
+	private UserRetriveService usrRetSrv;
+	@Autowired
+	private ProductService pServ;
 
 	@RequestMapping(value = "/admin")
 	public ModelAndView adminLoginPage() {
@@ -148,5 +162,35 @@ public class AdminController {
 		model.addAttribute("message",this.fbServ.deleteFeedback(Integer.parseInt(id)));
 		model.addAttribute("userFeedback",this.fbServ.getAllFeedbacks());
 		return new ModelAndView("adminHome","page","feedback");
+	}
+	@RequestMapping(value="/reportedProducts")
+	public ModelAndView reportedProductsPage(Model model) {
+		this.rpServ.DBConnect();
+		model.addAttribute("reportedProducts",this.rpServ.getReportedProducts());
+		this.rpServ.DBClose();
+		return new ModelAndView("adminHome","page","reportedProducts");
+	}
+	@RequestMapping(value="/viewReportedProduct",method=RequestMethod.POST)
+	public ModelAndView viewReportedProductPage(@RequestParam("reportId") String reportId,Model model) {
+		this.rpServ.DBConnect();
+		List<Object> report = this.rpServ.getSingleReport(Long.parseLong(reportId));
+		model.addAttribute("seller",this.usrRetSrv.getUser(Integer.parseInt(report.get(21).toString())));
+		model.addAttribute("report",report);
+		this.rpServ.DBClose();
+		return new ModelAndView("adminHome","page","singleReport");
+	}
+	@RequestMapping(value="/delReportedProduct",method=RequestMethod.POST)
+	public ModelAndView deleteReportAndProduct(@RequestParam("productId") String productId,@RequestParam("reportId") String reportId,Model model) {
+		this.message = this.pServ.deleteProduct(Integer.parseInt(productId));
+		if(!this.message.isStatus()) {
+			model.addAttribute("message",this.prServ.deleteReport(Integer.parseInt(reportId)));
+		}
+		else {
+			model.addAttribute("message",this.message);
+		}
+		this.rpServ.DBConnect();
+		model.addAttribute("reportedProducts",this.rpServ.getReportedProducts());
+		this.rpServ.DBClose();
+		return new ModelAndView("adminHome","page","reportedProducts");
 	}
 }
