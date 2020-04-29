@@ -3,7 +3,7 @@
 		var table = document.getElementById('specificationTable');
 		var rowCount = table.rows.length;
 		var row = table.insertRow(rowCount);
-		for (var i = 0; i <=1; i++) {
+		for (var i = 0; i <= 1; i++) {
 			var cell = 'cell' + i;
 			cell = row.insertCell(i);
 			var copycel = document.getElementById('col' + i).innerHTML;
@@ -14,26 +14,27 @@
 		var table = document.getElementById('specificationTable');
 		var rowCount = table.rows.length;
 		if (rowCount > '4') {
-			var row = table.deleteRow(rowCount-1);
+			var row = table.deleteRow(rowCount - 1);
 			rowCount--;
 		} else {
-			swal("Alert","There should be atleast two specification","info");
+			swal("Alert", "There should be atleast two specification", "info");
 		}
 	}
-	function setSpecification(){
+	function setSpecification() {
 		var titleArray = document.getElementsByName('title');
 		var title = [];
 		var descriptionArray = document.getElementsByName('description');
 		var description = [];
-		for(var i=0,n=titleArray.length;i<n;i++){
+		for (var i = 0, n = titleArray.length; i < n; i++) {
 			title.push(titleArray[i].value);
 			description.push(descriptionArray[i].value);
 		}
-		document.getElementById('specification').value=title.join("%sub%")+"%main%"+description.join("%sub%");
+		document.getElementById('specification').value = title.join("%sub%")
+				+ "%main%" + description.join("%sub%");
 		return confirm('Confirm Uploading Product ? ');
-	} 
+	}
 </script>
-<section class="product_description_area">
+<section class="product_description_area" style="color:black">
 	<div class="container">
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item">
@@ -162,7 +163,8 @@
 								</tr>
 							</table>
 							<form:errors path="productSpecification" cssClass="error"></form:errors>
-							<form:input path="productSpecification" type="hidden" id="specification" />
+							<form:input path="productSpecification" type="hidden"
+								id="specification" />
 						</div>
 						<div class="form-group text-center text-md-right mt-3">
 							<button class="button button-review" type="button"
@@ -178,15 +180,35 @@
 						</div>
 					</div>
 					<div class="col-lg-6">
+						<h3 style="color: green">TERMS OF UPLOADING</h3>
+						<ul type="square">
+							<li>
+								<p>You can upload upto 15 products in FREE COST.</p>
+							</li>
+							<li>
+								<p>For uploading products in range 15 - 50 . It costs Rs 30 and product will
+									be kept for 1 month.</p>
+							</li>
+							<li>
+								<p>For uploading products in range 51 - 100 . It costs Rs 50 and product
+									will be kept for 2 months.</p>
+							</li>
+							<li>
+								<p>For uploading products in range 100 above . It costs Rs 75 and product
+									will be kept for 4 months.</p>
+							</li>
+						</ul>
+						<hr>
 						<h6>Upload Product Pictures</h6>
 						<small style="color: green">To Make Your Product Picture
 							Look Attractive, Please upload the Picture of size height=170px
 							and width=230px</small>
 						<div class="form-group">
-							<input type="file" name="firstPhoto" onchange="firstImage(this);"/>
+							<input type="file" name="firstPhoto" onchange="firstImage(this);" />
 						</div>
 						<div class="form-group">
-							<input type="file" name="secondPhoto" onchange="secondImage(this);"/>
+							<input type="file" name="secondPhoto"
+								onchange="secondImage(this);" />
 						</div>
 						<div class="form-group">
 							<input type="file" name="thirdPhoto" onchange="thirdImage(this);" />

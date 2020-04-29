@@ -143,14 +143,11 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
 		</dependency>
-		<!-- Dependency Added by Koju Starts -->
-		<!-- Dependency Added by Koju Ends -->
-
-		<!-- Dependency Added by Unika Starts -->
-		<!-- Dependency Added by Unika Ends -->
-
-		<!-- Dependency Added by Sandesh Starts -->
-		<!-- Dependency Added by Sandesh Ends -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.10.2.2.21</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>

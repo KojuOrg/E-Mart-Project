@@ -9,7 +9,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Aroma Shop - Home</title>
+<title>Emart</title>
 <link rel="icon"
 	href="${pageContext.request.contextPath}/resources/img/Fevicon.png"
 	type="image/png">
@@ -52,7 +52,7 @@
 }
 </style>
 </head>
-<body>
+<body style="color:black">
 	<c:choose>
 		<c:when test="${message.status eq true}">
 			<script type="text/javascript">
@@ -125,6 +125,9 @@
 		</c:when>
 		<c:when test="${page eq 'confirmEmail'}">
 			<%@ include file="includes/confirmEmail.jsp"%>
+		</c:when>
+		<c:when test="${page eq 'paidProduct'}">
+			<%@ include file="includes/user/paidProduct.jsp"%>
 		</c:when>
 	</c:choose>
 	<!--================ Start footer Area  =================-->

@@ -9,6 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import beans.Product;
@@ -40,6 +42,7 @@ public class CategoryDisplayService {
 			System.out.println("Error : "+er.getMessage());
 		}
 	}
+	@Cacheable("products")
 	private void getSpecificProducts(String category) {
 		for(int i=0;i<this.allProducts.size();i++) {
 			if(this.allProducts.get(i).getCategory().equals(category)) {
@@ -51,10 +54,22 @@ public class CategoryDisplayService {
 		}
 		Collections.reverse(this.specificProducts);
 	}
+	
+	@Cacheable("products")
 	public List<Product> getProducts(String category) {
 		this.initValues();
 		this.getAllProducts();
 		this.getSpecificProducts(category);
 		return this.specificProducts;
 	}
+	
+	@CacheEvict(value = "products", allEntries = true)
+	public void refreshAllProducts()
+	{
+		/*
+		 * This method will remove all 'products' from cache, say as a
+		 * result of flush API.
+		 */
+	}
+	
 }

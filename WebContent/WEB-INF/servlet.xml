@@ -15,7 +15,7 @@
 		annotation features -->
 	<annotation-driven />
 	<context:component-scan
-		base-package="controllers,beans,services" />
+		base-package="controllers,beans,services,configurations" />
 
 	<!-- Step 6: Resolves views selected for rendering by @Controllers to .jsp 
 		resources in the /WEB-INF/views directory -->

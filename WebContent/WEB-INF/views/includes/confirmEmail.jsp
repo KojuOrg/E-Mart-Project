@@ -15,7 +15,6 @@
 					<h3>Enter your validation code to continue</h3>
 					
 					<form:form class="row login_form" action="confirmYourEmail" modelAttribute="email">
-						<h3> ${email.code}</h3>
 						<div class="col-md-12 form-group">
 							<form:input class="form-control" path="verifyCode"
 								name="Verify Code" placeholder="Enter code"

@@ -1,6 +1,9 @@
 package services;
 
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -28,18 +31,48 @@ public class CommentService {
 	public void setProductId(int productId) {
 		this.productId = productId;
 	}
-	public List<Comment> getComments(){
-		List<Comment> comments = new ArrayList<Comment>();
+	public List<Comment> getComments(int id){
+		this.initValues();
+		//List<Comment> comments = new ArrayList<Comment>();
+		List<Comment> comments = new LinkedList<>();
 		try {
 			this.session.beginTransaction();
-			String HQL = "FROM Comment WHERE productId=?";
+			String HQL = "FROM Comment WHERE productId="+id;
 			Query query = this.session.createQuery(HQL);
-			query.setInteger(0,this.productId);
-			comments = query.list();
+			 
+			 for(Object o : query.list()) {
+			     comments.add((Comment)o);
+			 }
+			//query.setInteger(0,this.productId);
+			//query.setInteger(0,1);
+			//List list = query.list();
+			//List<Comment> comments = query.list();
 			this.session.getTransaction().commit();
 		}catch(Exception er) {
+			System.out.println(er);
 			comments = null;
 		}
 		return comments;
+	}
+	
+	public boolean setComment(Comment comment) {
+		
+		if(ProfanityFilter.getCensoredText(comment.getComment()) == null)
+			return false;
+		
+		this.initValues();
+		try {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			Date dateobj = new Date();
+			String regDate=df.format(dateobj);
+			comment.setRegDate(regDate);
+			session.beginTransaction();
+			session.save(comment);
+			session.getTransaction().commit();
+		}
+		catch(Exception er) {
+			System.out.println(er);
+		}
+		return true;
 	}
 }

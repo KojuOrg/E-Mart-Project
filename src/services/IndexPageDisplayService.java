@@ -32,6 +32,7 @@ public class IndexPageDisplayService {
 		this.init();
 	}
 	public List<Product> getMobiles(){
+		this.init();
 		List<Product> products = new ArrayList<Product>();
 		try {
 			this.session.beginTransaction();
