@@ -20,6 +20,9 @@ public class FeedbackService {
 	private Feedback feedback;
 	@Autowired
 	private Message message;
+	@Autowired
+	private CrossSiteFilter filter;
+	
 	private SessionFactory factory;
 	private Session session;
 	private void initValues() {
@@ -77,6 +80,36 @@ public class FeedbackService {
 		}catch(Exception er) {
 			this.message.setStatus(true);
 			this.message.setMessage("Internal Error.!!!!!");
+		}
+		return this.message;
+	}
+	
+	public Message checkXssAttacks(Feedback userMessage) {
+		if(this.filter.isHtml(userMessage.getFullName())){
+			this.message.setStatus(true);
+			this.message.setMessage("Cannot insert HTML character in Full Name");
+		}
+		else {
+			if(this.filter.isHtml(userMessage.getSubject())) {
+				this.message.setStatus(true);
+				this.message.setMessage("Cannot insert HTML character in Subject");
+			}
+			else {
+				if(this.filter.isHtml(userMessage.getFeedback())) {
+					this.message.setStatus(true);
+					this.message.setMessage("Cannot insert HTML character in your message");
+				}
+				else {
+					if(this.filter.isHtml(userMessage.getEmail())) {
+						this.message.setStatus(true);
+						this.message.setMessage("Cannot insert HTML character in Email");
+					}
+					else {
+						this.message.setStatus(false);
+						this.message.setMessage("Valid Info");
+					}
+				}
+			}
 		}
 		return this.message;
 	}

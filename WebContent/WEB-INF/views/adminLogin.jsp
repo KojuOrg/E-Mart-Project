@@ -64,7 +64,14 @@ body {
 				swal("Success.!!!", "${message.message}", "success");
 			</script>
 		</c:when>
+		<c:when
+			test="${not empty loginError}">
+			<script type="text/javascript">
+				swal("Error..!", "${loginError}", "error");
+			</script>
+		</c:when>
 	</c:choose>
+	<c:remove var = "loginError" scope = "session" />
 	<center>
 		<div class="card" style="width: 380px; opacity:0.7">
 			<img class="card-img-bottom"
@@ -73,7 +80,7 @@ body {
 			<div class="card-body">
 				<h4 class="card-title">Administrator Login</h4>
 				<p class="card-text">
-					<form:form action="adminLogin" method="post" modelAttribute="admin">
+					<%-- <form:form action="admin" method="post" modelAttribute="admin">
 						<div class="row" style="padding: 8px">
 							<form:errors path="userName" cssClass="error" />
 							<div class="col-sm-6">
@@ -81,7 +88,7 @@ body {
 							</div>
 							<div class="col-sm-6">
 								<form:input path="userName" type="text" class="form-control"
-									placeholder="User Name" />
+									placeholder="User Name" name="username" />
 							</div>
 						</div>
 						<div class="row" style="padding: 8px">
@@ -91,14 +98,37 @@ body {
 							</div>
 							<div class="col-sm-6">
 								<form:input path="pwd" type="password" class="form-control"
-									placeholder="*********" />
+									placeholder="*********" name="password" />
 							</div>
 						</div>
 						<a href="#myModal" data-toggle="modal" style="float:left"><small>Forget Password ?</small></a>
 						<button class="btn btn-primary" type="submit">Login</button>
 						<form:input path="email" type="hidden" value="admin@gmail.com" />
 						<form:input path="contactNo" type="hidden" value="0123456789" />
-					</form:form>
+					</form:form> --%>
+					
+					<form action="login" method="post">
+						<div class="row" style="padding: 8px">
+							<div class="col-sm-6">
+								<label>User Name : </label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control"
+									placeholder="User Name" name="username" required="required"/>
+							</div>
+						</div>
+						<div class="row" style="padding: 8px">
+							<div class="col-sm-6">
+								<label>Password : </label>
+							</div>
+							<div class="col-sm-6">
+								<input type="password" class="form-control"
+									placeholder="*********" name="password" required="required" />
+							</div>
+						</div>
+						<a href="#myModal" data-toggle="modal" style="float:left"><small>Forget Password ?</small></a>
+						<button class="btn btn-primary" type="submit">Login</button>
+					</form>
 			</div>
 		</div>
 	</center>
@@ -121,7 +151,7 @@ body {
 					<form method="post" action="recoveryEmail">
 						<div class="form-group">
 							<label>Email : </label>
-							<input type="email" name="email" class="form-control" placeholder="Enter your Registered Email" />
+							<input type="email" name="email" class="form-control" placeholder="Enter your Registered Email" required="required" />
 						</div>
 						<button class="btn btn-primary" type="submit">Use Email</button>
 					</form>

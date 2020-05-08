@@ -5,12 +5,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>
-<%
-	if(request.getSession().getAttribute("adminUserName")==null)
-		response.sendRedirect("/Emart/admin");
-%>
 <!DOCTYPE html>
-<html>${modalId}
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Admin Home</title>
@@ -84,7 +80,7 @@
 							class="icon">
 					</div>
 					<div class="col-sm-10">
-						<a href="adminDashboard"><button type="button"
+						<a href="admin"><button type="button"
 								class="btn btn-info menu">DashBoard</button></a>
 					</div>
 				</div>
@@ -127,7 +123,7 @@
 							class="icon">
 					</div>
 					<div class="col-sm-10">
-						<a href="adminDashboard"><button type="button"
+						<a href="admin"><button type="button"
 								class="btn btn-info menu">
 								<small><b>Change Credentials</b></small>
 							</button></a>
@@ -141,7 +137,7 @@
 							class="icon">
 					</div>
 					<div class="col-sm-10">
-						<form action="adminLogout" onsubmit="return confirm('Are You Sure ?')">
+						<form action="logout" onsubmit="return confirm('Are You Sure ?')">
 							<button type="submit" class="btn btn-info menu">
 								<small><b>Log Out</b></small>
 							</button>

@@ -54,7 +54,7 @@ public class HomeController {
 	private UserLogin userLogin;
 	@Autowired
 	private Message message;
-	@Autowired 
+	@Autowired
 	private Product product;
 	@Autowired
 	private ProductService pservice;
@@ -75,15 +75,14 @@ public class HomeController {
 	@Autowired
 	private ProductReport preport;
 	@Autowired
-	private ProductReportService prServ; 
+	private ProductReportService prServ;
 	@Autowired
 	private ExpiryCheck expChk;
 	@Autowired
 	private PaidProductService ppService;
 	@Autowired
 	private PaidProduct paidProduct;
-	
-	
+
 	@Autowired
 	private User user;
 	@Autowired
@@ -96,57 +95,59 @@ public class HomeController {
 	private SendValidationCode svcserv;
 	@Autowired
 	private MostViewedProductService mvpServ;
-	
+
 	@Autowired
 	CacheManager cacheManager;
-	
+
 	@Autowired
 	private CommentService cmtserv;
 	@Autowired
 	private Comment comment;
+
 	// Request Mapping for Main Interface Starts
 	/* Koju's Protion Starts */
 	@RequestMapping(value = "/")
-	public ModelAndView indexPage(Model model,HttpSession session) {
+	public ModelAndView indexPage(Model model, HttpSession session) {
 		ServletContext context = session.getServletContext();
 		String path = context.getRealPath("uploads");
 		System.out.println(path);
 		this.expChk.checkExpiryProducts();
-		model.addAttribute("mobiles",this.ipds.getMobiles());
-		model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
+		model.addAttribute("mobiles", this.ipds.getMobiles());
+		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 		return new ModelAndView("index", "page", "mainBody");
 	}
 
 	@RequestMapping(value = "/index")
 	public ModelAndView homePage(Model model) {
-		model.addAttribute("mobiles",this.ipds.getMobiles());
-		model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
+		model.addAttribute("mobiles", this.ipds.getMobiles());
+		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 		return new ModelAndView("index", "page", "mainBody");
 	}
 
 	@RequestMapping(value = "/contact")
 	public ModelAndView contactPage(Model model) {
-		model.addAttribute("userMessage",this.feedback);
+		model.addAttribute("userMessage", this.feedback);
 		return new ModelAndView("index", "page", "contact");
 	}
 
 	@RequestMapping(value = "/userLogin")
 	public ModelAndView userLoginPage(Model model) {
-		//model.addAttribute("user", new UserLogin());
+		// model.addAttribute("user", new UserLogin());
 		model.addAttribute("user", this.userLogin);
 		return new ModelAndView("index", "page", "userLogin");
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView userLoginProcess(HttpServletRequest request,@ModelAttribute("user") UserLogin user, Model model) {
+	@RequestMapping(value = "/loginUser", method = RequestMethod.POST)
+	public ModelAndView userLoginProcess(HttpServletRequest request, @ModelAttribute("user") UserLogin user,
+			Model model) {
 		this.ulserv.setUser(user);
 		this.message = this.ulserv.validateUser(request);
 		model.addAttribute("message", this.message);
 		if (this.message.isStatus()) {
 			return new ModelAndView("index", "page", "userLogin");
 		} else {
-			model.addAttribute("mobiles",this.ipds.getMobiles());
-			model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
+			model.addAttribute("mobiles", this.ipds.getMobiles());
+			model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 			return new ModelAndView("index", "page", "mainBody");
 		}
 	}
@@ -186,288 +187,316 @@ public class HomeController {
 			this.message.setStatus(true);
 			this.message.setMessage("Invalid Recovery Code.!!!");
 			model.addAttribute("message", this.message);
-			model.addAttribute("user",this.userLogin);
+			model.addAttribute("user", this.userLogin);
 			return new ModelAndView("index", "page", "userLogin");
 		}
 	}
-	@RequestMapping(value="/recoverAccount",method=RequestMethod.POST)
-	public ModelAndView recoverUserAccountProcess(HttpServletRequest request,@RequestParam("recoveryPass") String pwd,Model model) {
-		if(pwd.equals("")) {
+
+	@RequestMapping(value = "/recoverAccount", method = RequestMethod.POST)
+	public ModelAndView recoverUserAccountProcess(HttpServletRequest request, @RequestParam("recoveryPass") String pwd,
+			Model model) {
+		if (pwd.equals("")) {
 			this.message.setStatus(true);
 			this.message.setMessage("Password Must Not be Empty");
-			model.addAttribute("message",this.message);
-			return new ModelAndView("index","page","recoverCredentials");
-		}
-		else {
+			model.addAttribute("message", this.message);
+			return new ModelAndView("index", "page", "recoverCredentials");
+		} else {
 			HttpSession session = request.getSession();
 			this.ufpserv.setUserName(session.getAttribute("user_name").toString());
-			model.addAttribute("message",this.ufpserv.recoverUserAccount(pwd));
-			model.addAttribute("user",this.userLogin);
-			session.removeAttribute("userEmail");
-			return new ModelAndView("index","page","userLogin");
-		}
-	}
-	@RequestMapping(value="/electronics")
-	public ModelAndView electronicsPage(Model model) {
-		model.addAttribute("categoryProducts",this.catDisServ.getProducts("Electronics"));
-		return new ModelAndView("index","page","electronics");
-	}
-	@RequestMapping(value="/computers")
-	public ModelAndView computersPage(Model model) {
-		model.addAttribute("categoryProducts",this.catDisServ.getProducts("Computers"));
-		return new ModelAndView("index","page","computers");
-	}
-	@RequestMapping(value="/mobiles")
-	public ModelAndView mobilesPage(Model model) {
-		model.addAttribute("categoryProducts",this.catDisServ.getProducts("Mobiles"));
-		return new ModelAndView("index","page","mobiles");
-	}
-	@RequestMapping(value="/clothes")
-	public ModelAndView clothesPage(Model model) {
-		model.addAttribute("categoryProducts",this.catDisServ.getProducts("Clothes"));
-		return new ModelAndView("index","page","clothes");
-	}
-	@RequestMapping(value="/cosmetics")
-	public ModelAndView cosmeticsPage(Model model) {
-		model.addAttribute("categoryProducts",this.catDisServ.getProducts("Cosmetics"));
-		return new ModelAndView("index","page","cosmetics");
-	}
-	@RequestMapping(value="/others")
-	public ModelAndView othersPage(Model model) {
-		model.addAttribute("categoryProducts",this.catDisServ.getProducts("Others"));
-		return new ModelAndView("index","page","others");
-	}
-	@RequestMapping(value="/singleProduct")
-	public ModelAndView singleProductPage() {
-		return new ModelAndView("index","page","singleProduct");
-	}
-	@RequestMapping(value="/sellProduct")
-	public ModelAndView productSellingPage(HttpServletRequest request,Model model) {
-		if(request.getSession().getAttribute("userName")==null){
+			model.addAttribute("message", this.ufpserv.recoverUserAccount(pwd));
 			model.addAttribute("user", this.userLogin);
-			return new ModelAndView("index","page","sellProductInvalid");
-		}
-		else {
-			model.addAttribute("product",this.product);
-			return new ModelAndView("index","page","sellProduct");
+			session.removeAttribute("userEmail");
+			return new ModelAndView("index", "page", "userLogin");
 		}
 	}
-	@RequestMapping(value="/sellingProduct",method=RequestMethod.POST)
-	public ModelAndView sellProductProcess(HttpSession sess,@Valid @ModelAttribute("product") Product product,BindingResult result,
-			@RequestParam("firstPhoto") CommonsMultipartFile photo1,
-			@RequestParam("secondPhoto") CommonsMultipartFile photo2,
-			@RequestParam("thirdPhoto") CommonsMultipartFile photo3,HttpSession session,Model model) {
-		if(result.hasErrors()) {
-			return new ModelAndView("index","page","sellProduct");
+
+	@RequestMapping(value = "/electronics")
+	public ModelAndView electronicsPage(Model model) {
+		model.addAttribute("categoryProducts", this.catDisServ.getProducts("Electronics"));
+		return new ModelAndView("index", "page", "electronics");
+	}
+
+	@RequestMapping(value = "/computers")
+	public ModelAndView computersPage(Model model) {
+		model.addAttribute("categoryProducts", this.catDisServ.getProducts("Computers"));
+		return new ModelAndView("index", "page", "computers");
+	}
+
+	@RequestMapping(value = "/mobiles")
+	public ModelAndView mobilesPage(Model model) {
+		model.addAttribute("categoryProducts", this.catDisServ.getProducts("Mobiles"));
+		return new ModelAndView("index", "page", "mobiles");
+	}
+
+	@RequestMapping(value = "/clothes")
+	public ModelAndView clothesPage(Model model) {
+		model.addAttribute("categoryProducts", this.catDisServ.getProducts("Clothes"));
+		return new ModelAndView("index", "page", "clothes");
+	}
+
+	@RequestMapping(value = "/cosmetics")
+	public ModelAndView cosmeticsPage(Model model) {
+		model.addAttribute("categoryProducts", this.catDisServ.getProducts("Cosmetics"));
+		return new ModelAndView("index", "page", "cosmetics");
+	}
+
+	@RequestMapping(value = "/others")
+	public ModelAndView othersPage(Model model) {
+		model.addAttribute("categoryProducts", this.catDisServ.getProducts("Others"));
+		return new ModelAndView("index", "page", "others");
+	}
+
+	@RequestMapping(value = "/singleProduct")
+	public ModelAndView singleProductPage() {
+		return new ModelAndView("index", "page", "singleProduct");
+	}
+
+	@RequestMapping(value = "/sellProduct")
+	public ModelAndView productSellingPage(HttpServletRequest request, Model model) {
+		if (request.getSession().getAttribute("userName") == null) {
+			model.addAttribute("user", this.userLogin);
+			return new ModelAndView("index", "page", "sellProductInvalid");
+		} else {
+			model.addAttribute("product", this.product);
+			return new ModelAndView("index", "page", "sellProduct");
 		}
-		else if(photo1.isEmpty() || photo2.isEmpty() || photo3.isEmpty()) {
+	}
+
+	@RequestMapping(value = "/sellingProduct", method = RequestMethod.POST)
+	public ModelAndView sellProductProcess(HttpSession sess, @Valid @ModelAttribute("product") Product product,
+			BindingResult result, @RequestParam("firstPhoto") CommonsMultipartFile photo1,
+			@RequestParam("secondPhoto") CommonsMultipartFile photo2,
+			@RequestParam("thirdPhoto") CommonsMultipartFile photo3, HttpSession session, Model model) {
+		if (result.hasErrors()) {
+			return new ModelAndView("index", "page", "sellProduct");
+		} else if (photo1.isEmpty() || photo2.isEmpty() || photo3.isEmpty()) {
 			this.message.setStatus(true);
 			this.message.setMessage("3 Photos are needed to upload your product.");
-			model.addAttribute("message",this.message);
-			model.addAttribute("product",product);
-			return new ModelAndView("index","page","sellProduct");
-		}
-		else {
-			product.setUserId(Integer.parseInt(session.getAttribute("userId").toString()));
-			this.ppService.setProduct(product);
-			this.paidProduct = this.ppService.checkNoOfProductUpload();
-			if(this.paidProduct!=null && this.paidProduct.getPaidPrice()!=0) {
-				if(this.ppService.uploadInPaidTable(sess)) {
-					System.out.println("paid product upload success");
-					product.setStatus(true);
-					product.setDelDate(this.ppService.getProductDelDate());
+			model.addAttribute("message", this.message);
+			model.addAttribute("product", product);
+			return new ModelAndView("index", "page", "sellProduct");
+		} else {
+			this.message = this.pservice.checkXssAttacks(product);
+			if (this.message.isStatus()) {
+				model.addAttribute("message", this.message);
+				model.addAttribute("product", product);
+				return new ModelAndView("index", "page", "sellProduct");
+			} else {
+				product.setUserId(Integer.parseInt(session.getAttribute("userId").toString()));
+				this.ppService.setProduct(product);
+				this.paidProduct = this.ppService.checkNoOfProductUpload();
+				if (this.paidProduct != null && this.paidProduct.getPaidPrice() != 0) {
+					if (this.ppService.uploadInPaidTable(sess)) {
+						System.out.println("paid product upload success");
+						product.setStatus(true);
+						product.setDelDate(this.ppService.getProductDelDate());
+						this.pservice.setProduct(product);
+						this.pservice.registerProduct(photo1, photo2, photo3, session);
+						model.addAttribute("paidProduct", this.paidProduct);
+						model.addAttribute("percentageMessage", this.ppService.getPercentageMessage());
+						this.catDisServ.refreshAllProducts();
+						return new ModelAndView("index", "page", "paidProduct");
+					} else {
+						this.message.setStatus(true);
+						this.message.setMessage("Internal Error");
+						model.addAttribute("message", this.message);
+						model.addAttribute("mobiles", this.ipds.getMobiles());
+						model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
+						this.catDisServ.refreshAllProducts();
+						return new ModelAndView("index", "page", "mainBody");
+					}
+				} else if (this.paidProduct != null && this.paidProduct.getPaidPrice() == 0) {
+					System.out.println("paidprice is 0");
 					this.pservice.setProduct(product);
-					this.pservice.registerProduct(photo1, photo2, photo3, session);
-					model.addAttribute("paidProduct",this.paidProduct);
-					model.addAttribute("percentageMessage",this.ppService.getPercentageMessage());
+					model.addAttribute("message", this.pservice.registerProduct(photo1, photo2, photo3, session));
+					model.addAttribute("mobiles", this.ipds.getMobiles());
+					model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 					this.catDisServ.refreshAllProducts();
-					return new ModelAndView("index","page","paidProduct");
-				}
-				else {
+					return new ModelAndView("index", "page", "mainBody");
+				} else {
+					System.out.println("Total Error");
 					this.message.setStatus(true);
 					this.message.setMessage("Internal Error");
-					model.addAttribute("message",this.message);
-					model.addAttribute("mobiles",this.ipds.getMobiles());
-					model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
+					model.addAttribute("message", this.message);
+					model.addAttribute("mobiles", this.ipds.getMobiles());
+					model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 					this.catDisServ.refreshAllProducts();
-					return new ModelAndView("index","page","mainBody");
+					return new ModelAndView("index", "page", "mainBody");
 				}
-			}
-			else if(this.paidProduct!=null && this.paidProduct.getPaidPrice()==0){
-				System.out.println("paidprice is 0");
-				this.pservice.setProduct(product);
-				model.addAttribute("message",this.pservice.registerProduct(photo1, photo2, photo3, session));
-				model.addAttribute("mobiles",this.ipds.getMobiles());
-				model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
-				this.catDisServ.refreshAllProducts();
-				return new ModelAndView("index","page","mainBody");
-			}
-			else {
-				System.out.println("Total Error");
-				this.message.setStatus(true);
-				this.message.setMessage("Internal Error");
-				model.addAttribute("message",this.message);
-				model.addAttribute("mobiles",this.ipds.getMobiles());
-				model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
-				this.catDisServ.refreshAllProducts();
-				return new ModelAndView("index","page","mainBody");
 			}
 		}
 	}
-	
-	
-	@RequestMapping(value="/paymentSuccess",method=RequestMethod.GET)
-	public ModelAndView paymentSuccessProcess(@RequestParam("oid") String uniqueCode,@RequestParam("amt") String totalPaymentAmount,@RequestParam("refId") String referenceId,Model model) {
+
+	@RequestMapping(value = "/paymentSuccess", method = RequestMethod.GET)
+	public ModelAndView paymentSuccessProcess(@RequestParam("oid") String uniqueCode,
+			@RequestParam("amt") String totalPaymentAmount, @RequestParam("refId") String referenceId, Model model) {
 		this.message.setStatus(false);
-		this.message.setMessage(uniqueCode+" "+totalPaymentAmount+" "+referenceId);
-		model.addAttribute("mobiles",this.ipds.getMobiles());
-		model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
-		return new ModelAndView("index","page","mainBody");
+		this.message.setMessage(uniqueCode + " " + totalPaymentAmount + " " + referenceId);
+		model.addAttribute("mobiles", this.ipds.getMobiles());
+		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
+		return new ModelAndView("index", "page", "mainBody");
 	}
-	@RequestMapping(value="/paymentFailure")
+
+	@RequestMapping(value = "/paymentFailure")
 	public ModelAndView paymentSuccessProcess(Model model) {
 		this.message.setStatus(true);
 		this.message.setMessage("Failed payment");
-		model.addAttribute("mobiles",this.ipds.getMobiles());
-		model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
-		return new ModelAndView("index","page","mainBody");
+		model.addAttribute("mobiles", this.ipds.getMobiles());
+		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
+		return new ModelAndView("index", "page", "mainBody");
 	}
-	
-	@RequestMapping(value="/singleProduct",method=RequestMethod.GET)
-	public ModelAndView singleProductPage(@RequestParam("product") int id,Model model,Model commentModel) {
+
+	@RequestMapping(value = "/singleProduct", method = RequestMethod.GET)
+	public ModelAndView singleProductPage(@RequestParam("product") int id, Model model, Model commentModel) {
 		this.product = this.pservice.getSingleProduct(id);
-		model.addAttribute("product",this.product);
-		model.addAttribute("specification",this.pservice.getProductSpecifications());
-		model.addAttribute("seller",this.guserv.getUser(this.product.getUserId()));
-		model.addAttribute("comment",this.cmtserv.getComments(id));
+		model.addAttribute("product", this.product);
+		model.addAttribute("specification", this.pservice.getProductSpecifications());
+		model.addAttribute("seller", this.guserv.getUser(this.product.getUserId()));
+		model.addAttribute("comment", this.cmtserv.getComments(id));
 		this.comment.setProductId(id);
 		commentModel.addAttribute("newComment", this.comment);
-		return new ModelAndView("index","page","singleProduct");
+		return new ModelAndView("index", "page", "singleProduct");
 	}
-	@RequestMapping(value="/logout")
-	public ModelAndView logoutProcess(HttpServletRequest request,Model model) {
+
+	@RequestMapping(value = "/logoutUser")
+	public ModelAndView logoutProcess(HttpServletRequest request, Model model) {
 		request.getSession().removeAttribute("userName");
 		request.getSession().removeAttribute("userId");
-		model.addAttribute("mobiles",this.ipds.getMobiles());
-		model.addAttribute("mostViewed",this.mvpServ.getMostViewedProducts());
-		return new ModelAndView("index","page","mainBody");
+		model.addAttribute("mobiles", this.ipds.getMobiles());
+		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
+		return new ModelAndView("index", "page", "mainBody");
 	}
-	@RequestMapping(value="/userFeedback",method=RequestMethod.POST)
-	public ModelAndView userMessageProcess(@Valid @ModelAttribute("userMessage") Feedback feedback,BindingResult result,Model model) {
-		if(result.hasErrors()) {
+
+	@RequestMapping(value = "/userFeedback", method = RequestMethod.POST)
+	public ModelAndView userMessageProcess(@Valid @ModelAttribute("userMessage") Feedback feedback,
+			BindingResult result, Model model) {
+		if (result.hasErrors()) {
 			return new ModelAndView("index", "page", "contact");
-		}
-		else {
-			this.fbServ.setFeedbackObj(feedback);
-			model.addAttribute("message",this.fbServ.uploadFeedback());
-			model.addAttribute("userMessage",new Feedback());
-			return new ModelAndView("index", "page", "contact");
+		} else {
+			this.message = this.fbServ.checkXssAttacks(feedback);
+			if (this.message.isStatus()) {
+				model.addAttribute("userMessage", feedback);
+				model.addAttribute("message", this.message);
+				return new ModelAndView("index", "page", "contact");
+			} else {
+				this.fbServ.setFeedbackObj(feedback);
+				model.addAttribute("message", this.fbServ.uploadFeedback());
+				model.addAttribute("userMessage", new Feedback());
+				return new ModelAndView("index", "page", "contact");
+			}
 		}
 	}
-	@RequestMapping(value="/productReport",method=RequestMethod.POST)
-	public ModelAndView productReportProcess(HttpServletRequest request,HttpSession session,@RequestParam("productId") String productId,@RequestParam("report") String report,Model model) {
+
+	@RequestMapping(value = "/productReport", method = RequestMethod.POST)
+	public ModelAndView productReportProcess(HttpServletRequest request, HttpSession session,
+			@RequestParam("productId") String productId, @RequestParam("report") String report, Model model) {
 		this.product = this.pservice.getSingleProduct(Integer.parseInt(productId));
-		model.addAttribute("product",this.product);
-		model.addAttribute("specification",this.pservice.getProductSpecifications());
-		model.addAttribute("seller",this.guserv.getUser(this.product.getUserId()));
-		if(session.getAttribute("userName")==null) {
+		model.addAttribute("product", this.product);
+		model.addAttribute("specification", this.pservice.getProductSpecifications());
+		model.addAttribute("seller", this.guserv.getUser(this.product.getUserId()));
+		if (session.getAttribute("userName") == null) {
 			this.message.setStatus(true);
 			this.message.setMessage("You must login to Report product.!!!");
-			model.addAttribute("message",this.message);
-		}
-		else {
-			if(report==null || report.equals("")) {
+			model.addAttribute("message", this.message);
+		} else {
+			if (report == null || report.equals("")) {
 				this.message.setStatus(true);
 				this.message.setMessage("Please fill the report Box.!!");
-				model.addAttribute("message",this.message);
-			}
-			else {
+				model.addAttribute("message", this.message);
+			} else {
 				this.preport.setProductId(Integer.parseInt(productId));
 				this.preport.setUserId(Integer.parseInt(session.getAttribute("userId").toString()));
 				this.preport.setRegDate(new SimpleDateFormat("yy/MM/dd").format(new Date()));
 				this.preport.setReport(report);
 				this.prServ.setReport(this.preport);
-				model.addAttribute("message",this.prServ.uploadReport());
+				model.addAttribute("message", this.prServ.uploadReport());
 			}
 		}
-		return new ModelAndView("index","page","singleProduct");
+		return new ModelAndView("index", "page", "singleProduct");
 	}
 	/* Koju's Portion Ends */
 
 	/* Unika's Portion Ends */
 	@RequestMapping(value = "/register")
 	public ModelAndView registerPage(Model userModel) {
-		//userModel.addAttribute("user", new User());
+		// userModel.addAttribute("user", new User());
 		userModel.addAttribute("user", this.user);
 		return new ModelAndView("index", "page", "register");
 	}
 
 	@RequestMapping(value = "/processRegister")
-	public ModelAndView processForm(@Valid @ModelAttribute("user") User theUser, BindingResult thebindingresult, Model model) throws AddressException, MessagingException {
+	public ModelAndView processForm(@Valid @ModelAttribute("user") User theUser, BindingResult thebindingresult,
+			Model model) throws AddressException, MessagingException {
 		if (thebindingresult.hasErrors()) {
 			// Redirect to form
 			return new ModelAndView("index", "page", "register");
 		} else {
-			 message = urserv.register(theUser);
-			//message=new UserRegister(theUser).register();
-			//model.addAttribute("message", message);
-			if (message.isStatus()) {
-				
-				this.message.setStatus(true);
-				this.message.setMessage("Internal Error");
+			this.message = this.urserv.checkXssAttacks(theUser);
+			if(this.message.isStatus()) {
+				model.addAttribute("user",theUser);
 				model.addAttribute("message",this.message);
 				return new ModelAndView("index", "page", "register");
-			} else {
-				
-				//Email email=new Email();
-				email.setUserId(theUser.getId());
-				email.setEmail(theUser.getEmail());
-				email.setCode(UUID.randomUUID().toString());
-				svcserv.sendEmail1(email);
-				model.addAttribute("email", email);
-				return new ModelAndView("index", "page", "confirmEmail");
+			}
+			else {
+				message = urserv.register(theUser);
+				// message=new UserRegister(theUser).register();
+				// model.addAttribute("message", message);
+				if (message.isStatus()) {
+
+					this.message.setStatus(true);
+					this.message.setMessage("Internal Error");
+					model.addAttribute("message", this.message);
+					return new ModelAndView("index", "page", "register");
+				} else {
+
+					// Email email=new Email();
+					email.setUserId(theUser.getId());
+					email.setEmail(theUser.getEmail());
+					email.setCode(UUID.randomUUID().toString());
+					svcserv.sendEmail1(email);
+					model.addAttribute("email", email);
+					return new ModelAndView("index", "page", "confirmEmail");
+				}
 			}
 		}
 	}
-	
-	@RequestMapping(value="/confirmYourEmail",method=RequestMethod.POST)
+
+	@RequestMapping(value = "/confirmYourEmail", method = RequestMethod.POST)
 	public ModelAndView enableAccount(@ModelAttribute("email") Email theEmail, Model model) {
-		 message = evserv.confirmEmail(theEmail);
+		message = evserv.confirmEmail(theEmail);
 		if (message.isStatus()) {
 			model.addAttribute("user", this.user);
-			
+
 			this.message.setStatus(true);
 			this.message.setMessage("Incorrect code");
-			model.addAttribute("message",this.message);
-			//model.addAttribute("user", new User());
+			model.addAttribute("message", this.message);
+			// model.addAttribute("user", new User());
 			model.addAttribute("email", theEmail);
 			return new ModelAndView("index", "page", "confirmEmail");
 		} else {
 			this.message.setStatus(false);
 			this.message.setMessage("Your account has been registered");
-			model.addAttribute("message",this.message);
+			model.addAttribute("message", this.message);
 			model.addAttribute("user", this.userLogin);
 			return new ModelAndView("index", "page", "userLogin");
 		}
-		
+
 	}
-	
+
 	@RequestMapping(value = "/addComment")
 	public ModelAndView commentPage(@ModelAttribute("comment") Comment comment, Model model, Model commentModel) {
-		if(cmtserv.setComment(comment)==false)
-		{
+		if (cmtserv.setComment(comment) == false) {
 			this.message.setStatus(true);
 			this.message.setMessage("Your comment contains bad words");
-			model.addAttribute("message",this.message);
-			return new ModelAndView("index","page","mainBody");
-		}
-		else {
+			model.addAttribute("message", this.message);
+			return new ModelAndView("index", "page", "mainBody");
+		} else {
 			this.message.setStatus(false);
 			this.message.setMessage("Comment uploaded");
-			model.addAttribute("message",this.message);
-			return new ModelAndView("index","page","mainBody");
+			model.addAttribute("message", this.message);
+			return new ModelAndView("index", "page", "mainBody");
 		}
-		
+
 	}
 	/* Unika's Portion Ends */
 
