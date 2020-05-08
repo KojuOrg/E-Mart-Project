@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import beans.Admin;
+import beans.AdminDetail;
 import beans.Message;
 import services.AdminService;
 import services.FeedbackService;
@@ -44,34 +47,25 @@ public class AdminController {
 	@Autowired
 	private ProductService pServ;
 
-	@RequestMapping(value = "/admin")
+	private String getAdminUserName() {
+		AdminDetail admin = (AdminDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		System.out.println(SecurityContextHolder.getContext().getAuthentication().getDetails());
+		return admin.getUsername();
+	}
+
+	private String getAdminPassword() {
+		AdminDetail admin = (AdminDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return admin.getPassword();
+	}
+
+	@RequestMapping(value = "/login")
 	public ModelAndView adminLoginPage() {
 		return new ModelAndView("adminLogin", "admin", admin);
 	}
 
-	@RequestMapping(value = "/adminLogin", method = RequestMethod.POST)
-	public ModelAndView adminLoginProcess(HttpSession session, @Valid @ModelAttribute("admin") Admin admin,
-			BindingResult result, Model model) {
-		if (result.hasErrors()) {
-			return new ModelAndView("adminLogin");
-		} else {
-			this.adminService.setAdmin(admin);
-			this.message = this.adminService.adminLogin();
-			if (this.message.isStatus()) {
-				model.addAttribute("message", this.message);
-				return new ModelAndView("adminLogin");			
-			} else {
-				session.setAttribute("adminUserName", admin.getUserName());
-				model.addAttribute("adminUpdate", this.adminService.getAdmin());
-				model.addAttribute("adminInfo", this.adminService.getAdmin());
-				return new ModelAndView("adminHome", "page", "dashboard");
-			}
-		}
-	}
-
-	@RequestMapping(value = "/adminDashboard")
-	public ModelAndView adminDashboardPage(HttpSession session, Model model) {
-		this.admin.setUserName(session.getAttribute("adminUserName").toString());
+	@RequestMapping(value = "/admin")
+	public ModelAndView adminDashboardPage(Model model) {
+		this.admin.setUserName(this.getAdminUserName());
 		this.adminService.setAdmin(this.admin);
 		model.addAttribute("adminUpdate", this.adminService.getAdmin());
 		model.addAttribute("adminInfo", this.adminService.getAdmin());
@@ -123,74 +117,89 @@ public class AdminController {
 	}
 
 	// Forget Password Process Ends
-	@RequestMapping(value = "/adminLogout")
-	public ModelAndView adminLogoutProcess(HttpSession session) {
-		session.removeAttribute("adminUserName");
-		return new ModelAndView("adminLogin", "admin", this.admin);
-	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/adminUpdateCredentials", method = RequestMethod.POST)
 	public ModelAndView adminUpdateCredentialsProcess(HttpSession session,
 			@Valid @ModelAttribute("adminUpdate") Admin admin, BindingResult result,
 			@RequestParam("oldPass") String oldPass, Model model) {
-		this.admin.setUserName(session.getAttribute("adminUserName").toString());
+		this.admin.setUserName(this.getAdminUserName());
 		this.adminService.setAdmin(this.admin);
 		if (result.hasErrors()) {
 			model.addAttribute("adminInfo", this.adminService.getAdmin());
 			return new ModelAndView("adminHome", "page", "dashboard");
 		} else {
-			this.adminService.setAdmin(admin);
-			this.message = this.adminService.updateAdmin(session.getAttribute("adminUserName").toString(), oldPass);
-			model.addAttribute("message", this.message);
+			this.message = this.adminService.checkXssAttacks(admin);
 			if (this.message.isStatus()) {
 				model.addAttribute("adminInfo", this.adminService.getAdmin());
-				model.addAttribute("adminUpdate",this.adminService.getAdmin());
+				model.addAttribute("adminUpdate", admin);
+				model.addAttribute("message",this.message);
 				return new ModelAndView("adminHome", "page", "dashboard");
 			} else {
-				session.removeAttribute("adminUserName");
-				return new ModelAndView("adminLogin", "admin", this.admin);
+				this.adminService.setAdmin(admin);
+				this.message = this.adminService.updateAdmin(this.getAdminUserName(), oldPass);
+				model.addAttribute("message", this.message);
+				if (this.message.isStatus()) {
+					this.adminService.setAdmin(this.admin);
+					model.addAttribute("adminInfo", this.adminService.getAdmin());
+					model.addAttribute("adminUpdate", admin);
+					return new ModelAndView("adminHome", "page", "dashboard");
+				} else {
+					SecurityContextHolder.clearContext();
+					return new ModelAndView("adminLogin");
+				}
 			}
 		}
 	}
-	@RequestMapping(value="/userFeedback")
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/userFeedback")
 	public ModelAndView userFeedbackPage(Model model) {
-		model.addAttribute("userFeedback",this.fbServ.getAllFeedbacks());
-		return new ModelAndView("adminHome","page","feedback");
+		model.addAttribute("userFeedback", this.fbServ.getAllFeedbacks());
+		return new ModelAndView("adminHome", "page", "feedback");
 	}
-	@RequestMapping(value="/deleteUserFeedback",method=RequestMethod.POST)
-	public ModelAndView deleteUserFeedbackProcess(@RequestParam("id") String id,Model model) {
-		model.addAttribute("message",this.fbServ.deleteFeedback(Integer.parseInt(id)));
-		model.addAttribute("userFeedback",this.fbServ.getAllFeedbacks());
-		return new ModelAndView("adminHome","page","feedback");
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/deleteUserFeedback", method = RequestMethod.POST)
+	public ModelAndView deleteUserFeedbackProcess(@RequestParam("id") String id, Model model) {
+		model.addAttribute("message", this.fbServ.deleteFeedback(Integer.parseInt(id)));
+		model.addAttribute("userFeedback", this.fbServ.getAllFeedbacks());
+		return new ModelAndView("adminHome", "page", "feedback");
 	}
-	@RequestMapping(value="/reportedProducts")
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/reportedProducts")
 	public ModelAndView reportedProductsPage(Model model) {
 		this.rpServ.DBConnect();
-		model.addAttribute("reportedProducts",this.rpServ.getReportedProducts());
+		model.addAttribute("reportedProducts", this.rpServ.getReportedProducts());
 		this.rpServ.DBClose();
-		return new ModelAndView("adminHome","page","reportedProducts");
+		return new ModelAndView("adminHome", "page", "reportedProducts");
 	}
-	@RequestMapping(value="/viewReportedProduct",method=RequestMethod.POST)
-	public ModelAndView viewReportedProductPage(@RequestParam("reportId") String reportId,Model model) {
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/viewReportedProduct", method = RequestMethod.POST)
+	public ModelAndView viewReportedProductPage(@RequestParam("reportId") String reportId, Model model) {
 		this.rpServ.DBConnect();
 		List<Object> report = this.rpServ.getSingleReport(Long.parseLong(reportId));
-		model.addAttribute("seller",this.usrRetSrv.getUser(Integer.parseInt(report.get(21).toString())));
-		model.addAttribute("report",report);
+		model.addAttribute("seller", this.usrRetSrv.getUser(Integer.parseInt(report.get(21).toString())));
+		model.addAttribute("report", report);
 		this.rpServ.DBClose();
-		return new ModelAndView("adminHome","page","singleReport");
+		return new ModelAndView("adminHome", "page", "singleReport");
 	}
-	@RequestMapping(value="/delReportedProduct",method=RequestMethod.POST)
-	public ModelAndView deleteReportAndProduct(@RequestParam("productId") String productId,@RequestParam("reportId") String reportId,Model model) {
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/delReportedProduct", method = RequestMethod.POST)
+	public ModelAndView deleteReportAndProduct(@RequestParam("productId") String productId,
+			@RequestParam("reportId") String reportId, Model model) {
 		this.message = this.pServ.deleteProduct(Integer.parseInt(productId));
-		if(!this.message.isStatus()) {
-			model.addAttribute("message",this.prServ.deleteReport(Integer.parseInt(reportId)));
-		}
-		else {
-			model.addAttribute("message",this.message);
+		if (!this.message.isStatus()) {
+			model.addAttribute("message", this.prServ.deleteReport(Integer.parseInt(reportId)));
+		} else {
+			model.addAttribute("message", this.message);
 		}
 		this.rpServ.DBConnect();
-		model.addAttribute("reportedProducts",this.rpServ.getReportedProducts());
+		model.addAttribute("reportedProducts", this.rpServ.getReportedProducts());
 		this.rpServ.DBClose();
-		return new ModelAndView("adminHome","page","reportedProducts");
+		return new ModelAndView("adminHome", "page", "reportedProducts");
 	}
 }

@@ -15,7 +15,7 @@
 			<div class="col-lg-6">
 				<div class="login_form_inner">
 					<h3>Log in to enter</h3>
-					<form:form class="row login_form" action="login" id="contactForm"
+					<form:form class="row login_form" action="loginUser" id="contactForm"
 						modelAttribute="user">
 						<div class="col-md-12 form-group">
 							<form:errors path="userName" cssClass="error"></form:errors>

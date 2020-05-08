@@ -17,6 +17,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import beans.Admin;
@@ -28,6 +29,8 @@ public class AdminService {
 	private Admin admin, tmpAdmin;
 	@Autowired
 	private Message message;
+	@Autowired 
+	private CrossSiteFilter filter;
 	private SessionFactory factory;
 	private Session session;
 	private String email;
@@ -47,55 +50,62 @@ public class AdminService {
 	public void setAdmin(Admin admin) {
 		this.admin = admin;
 	}
-
-	public Message adminLogin() {
-		this.initValues();
-		try {
-			this.session.beginTransaction();
-			String HQL = "FROM Admin WHERE userName=? AND pwd=?";
-			Query query = this.session.createQuery(HQL);
-			query.setString(0, this.admin.getUserName());
-			query.setString(1, this.admin.getPwd());
-			this.tmpAdmin = (Admin) query.uniqueResult();
-			this.session.getTransaction().commit();
-			if (this.tmpAdmin != null) {
-				if (this.tmpAdmin.getInvalidCount() >= 5) {
-					this.message.setStatus(true);
-					this.message.setMessage(
-							"Account Locked Due to Multiple Invalid Access.!!! Go through Forget Password Method.");
-				} else {
-					this.initValues();
-					this.session.beginTransaction();
-					HQL = "FROM Admin WHERE userName=? AND pwd=?";
-					query = this.session.createQuery(HQL);
-					query.setString(0, this.admin.getUserName());
-					query.setString(1, this.admin.getPwd());
-					this.tmpAdmin = (Admin) query.uniqueResult();
-					this.tmpAdmin.setInvalidCount(0);
-					this.session.getTransaction().commit();
-					this.message.setStatus(false);
-					this.message.setMessage("Welcome Admin");
-				}
-			} else {
-				this.initValues();
-				this.session.beginTransaction();
-				HQL = "FROM Admin WHERE userName=?";
-				query = this.session.createQuery(HQL);
-				query.setString(0, this.admin.getUserName());
-				this.tmpAdmin = (Admin) query.uniqueResult();
-				if (this.tmpAdmin != null && this.tmpAdmin.getInvalidCount() < 5) {
-					this.tmpAdmin.setInvalidCount(this.tmpAdmin.getInvalidCount() + 1);
-				}
-				this.session.getTransaction().commit();
-				this.message.setStatus(true);
-				this.message.setMessage("Invalid User or Password.!!!");
-			}
-		} catch (Exception er) {
+	public Message checkXssAttacks(Admin admin) {
+		if(this.filter.isHtml(admin.getUserName())) {
 			this.message.setStatus(true);
-			this.message.setMessage("Internal Error.!!!!!");
-			System.out.println("Error : " + er.getMessage());
+			this.message.setMessage("Cannot input HTML Character in username");
+		}
+		else {
+			if(this.filter.isHtml(admin.getEmail())){
+				this.message.setStatus(true);
+				this.message.setMessage("Cannot input HTML Character in Email");
+			}
+			else {
+				if(this.filter.isHtml(admin.getContactNo())) {
+					this.message.setStatus(true);
+					this.message.setMessage("Cannot input HTML Character in contact number");
+				}
+				else {
+					this.message.setStatus(false);
+					this.message.setMessage("Valid Inputs");
+				}
+			}
 		}
 		return this.message;
+	}
+	public void adminLogin(String username) {
+		try {
+			this.initValues();
+			this.session.beginTransaction();
+			String HQL = "FROM Admin WHERE userName=?";
+			Query query = this.session.createQuery(HQL);
+			query.setString(0, username);
+			this.tmpAdmin = (Admin) query.uniqueResult();
+			if (this.tmpAdmin != null && this.tmpAdmin.getInvalidCount() < 5) {
+				this.tmpAdmin.setInvalidCount(this.tmpAdmin.getInvalidCount() + 1);
+			}
+			this.session.getTransaction().commit();
+		} catch (Exception er) {
+			System.out.println("Error : " + er.getMessage());
+		}
+	}
+	public boolean isAdminLocked(String username) {
+		boolean lockStatus=false;
+		try {
+			this.initValues();
+			this.session.beginTransaction();
+			String HQL = "FROM Admin WHERE userName=?";
+			Query query = this.session.createQuery(HQL);
+			query.setString(0, username);
+			this.tmpAdmin = (Admin) query.uniqueResult();
+			if (this.tmpAdmin != null && this.tmpAdmin.getInvalidCount() >=5) {
+				lockStatus = true;
+			}
+			this.session.getTransaction().commit();
+		} catch (Exception er) {
+			System.out.println("Error : " + er.getMessage());
+		}
+		return lockStatus;
 	}
 
 	private void sendRecoveryCode() {
@@ -138,6 +148,7 @@ public class AdminService {
 		} catch (Exception er) {
 			this.message.setStatus(true);
 			this.message.setMessage("Internal Error Try Again Later.!!!");
+			System.out.println("Error in second : "+er.getLocalizedMessage());
 		}
 	}
 
@@ -163,8 +174,24 @@ public class AdminService {
 		} catch (Exception er) {
 			this.message.setStatus(true);
 			this.message.setMessage("Internal Error...!!!!");
+			System.out.println("Error in first : "+er.getLocalizedMessage());
 		}
 		return this.message;
+	}
+	
+	public void resetInvalidCount(String username) {
+		try{
+			this.initValues();
+			this.session.beginTransaction();
+			String HQL = "From Admin WHERE username=?";
+			Query query = this.session.createQuery(HQL);
+			query.setParameter(0,username);
+			this.admin = (Admin)query.uniqueResult();
+			this.admin.setInvalidCount(0);
+			this.session.getTransaction().commit();
+		}catch(Exception er) {
+			er.printStackTrace();
+		}
 	}
 
 	public Message setNewPassword(String pass, String email) {
@@ -176,7 +203,8 @@ public class AdminService {
 			query.setString(0, email);
 			this.admin = (Admin) query.uniqueResult();
 			this.admin.setInvalidCount(0);
-			this.admin.setPwd(pass);
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+			this.admin.setPwd(encoder.encode(pass));
 			this.session.getTransaction().commit();
 			this.message.setStatus(false);
 			this.message.setMessage("Password Changed Successfully.!!!");
@@ -198,6 +226,7 @@ public class AdminService {
 			this.session.getTransaction().commit();
 		} catch (Exception er) {
 			this.admin = null;
+			System.out.println("Error:"+er.getMessage());
 		}
 		this.admin.setPwd("");
 		return this.admin;
@@ -206,27 +235,34 @@ public class AdminService {
 		this.initValues();
 		try {
 			this.session.beginTransaction();
-			String HQL = "FROM Admin WHERE userName=? AND pwd=?";
+			String HQL = "FROM Admin WHERE userName=?";
 			Query query = this.session.createQuery(HQL);
 			query.setString(0,userName);
-			query.setString(1,oldPass);
 			this.tmpAdmin = (Admin)query.uniqueResult();
 			if(this.tmpAdmin!=null) {
-				this.tmpAdmin.setUserName(this.admin.getUserName());
-				this.tmpAdmin.setEmail(this.admin.getEmail());
-				this.tmpAdmin.setContactNo(this.admin.getContactNo());
-				this.tmpAdmin.setPwd(this.admin.getPwd());
-				this.message.setStatus(false);
-				this.message.setMessage("Credentials changed successfully.!! Login to Continue.!!!");
+				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+				if(encoder.matches(oldPass, this.tmpAdmin.getPwd())) {
+					this.tmpAdmin.setUserName(this.admin.getUserName());
+					this.tmpAdmin.setEmail(this.admin.getEmail());
+					this.tmpAdmin.setContactNo(this.admin.getContactNo());
+					this.tmpAdmin.setPwd(encoder.encode(this.admin.getPwd()));
+					this.message.setStatus(false);
+					this.message.setMessage("Credentials changed successfully.!! Login to Continue.!!!");
+				}
+				else {
+					this.message.setStatus(true);
+					this.message.setMessage("Invalid Old Password....!!!");
+				}
 			}
 			else {
 				this.message.setStatus(true);
-				this.message.setMessage("Invalid Old Pass.!!!!");
+				this.message.setMessage("Invalid old Username....!!!");
 			}
 			this.session.getTransaction().commit();
 		}catch(Exception er) {
 			this.message.setStatus(true);
 			this.message.setMessage("Internal Error...!!!");
+			System.out.println("Error : "+er.getMessage());
 		}
 		return this.message;
 	}

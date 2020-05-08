@@ -40,6 +40,9 @@ public class ProductService {
 	private Message message;
 	@Autowired
 	private UpdateUser user;
+	@Autowired
+	private CrossSiteFilter filter;
+	
 	private SessionFactory factory;
 	private Session session;
 	private List<String> titles;
@@ -213,6 +216,66 @@ public class ProductService {
 			System.out.println("Error Detected : "+er.getMessage());
 			this.message.setStatus(true);
 			this.message.setMessage("Internal errorr.!!!");
+		}
+		return this.message;
+	}
+	
+	public Message checkXssAttacks(Product product) {
+		if(this.filter.isHtml(product.getProductName())) {
+			this.message.setStatus(true);
+			this.message.setMessage("Cannot input HTML character in Product Name");
+		}
+		else {
+			if(this.filter.isHtml(product.getDeliveryArea())) {
+				this.message.setStatus(true);
+				this.message.setMessage("Cannot input HTML character in Delivery Area");
+			}
+			else {
+				if(this.filter.isHtml(product.getProductSpecification())) {
+					this.message.setStatus(true);
+					this.message.setMessage("Cannot input HTML character in Product Specification");
+				}
+				else {
+					if(this.filter.isHtml(product.getUsedFor())) {
+						this.message.setStatus(true);
+						this.message.setMessage("Cannot input HTML character in Used For");
+					}
+					else {
+						if(this.filter.isHtml(product.getWarrantyPeriod())) {
+							this.message.setStatus(true);
+							this.message.setMessage("Cannot input HTML character in Warranty Period");
+						}
+						else {
+							if(this.filter.isHtml(product.getDeliveryCharges().toString())) {
+								this.message.setStatus(true);
+								this.message.setMessage("Cannot input HTML character in Delivery Charges");
+							}
+							else {
+								if(this.filter.isHtml(product.getPhoto1())) {
+									this.message.setStatus(true);
+									this.message.setMessage("Rename your first image without HTML character then upload.");
+								}
+								else {
+									if(this.filter.isHtml(product.getPhoto2())) {
+										this.message.setStatus(true);
+										this.message.setMessage("Rename your second image without HTML character then upload.");
+									}
+									else {
+										if(this.filter.isHtml(product.getPhoto3())) {
+											this.message.setStatus(true);
+											this.message.setMessage("Rename your third image without HTML character then upload.");
+										}
+										else {
+											this.message.setStatus(false);
+											this.message.setMessage("Vaid Product");
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 		return this.message;
 	}
