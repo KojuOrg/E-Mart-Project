@@ -29,7 +29,7 @@ public class User {
 	
 	@Column(name="user_name")
 	@NotEmpty(message="is required")
-	@UniqueUsername
+	//@UniqueUsername
 	private String userName;
 	
 	@Column(name="address")

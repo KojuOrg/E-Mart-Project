@@ -9,8 +9,10 @@ import javax.mail.internet.AddressException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.swing.SwingWorker;
 import javax.validation.Valid;
 
+import org.apache.pdfbox.cos.COSOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,7 @@ import beans.Message;
 import beans.PaidProduct;
 import beans.Product;
 import beans.ProductReport;
+import beans.ProductViewer;
 import beans.User;
 import beans.UserLogin;
 import services.CategoryDisplayService;
@@ -43,6 +46,7 @@ import services.MostViewedProductService;
 import services.PaidProductService;
 import services.ProductReportService;
 import services.ProductService;
+import services.ProductViewerService;
 import services.SendValidationCode;
 import services.UserForgetPassService;
 import services.UserLoginService;
@@ -95,6 +99,10 @@ public class HomeController {
 	private SendValidationCode svcserv;
 	@Autowired
 	private MostViewedProductService mvpServ;
+	@Autowired
+	private ProductViewerService pvServ;
+	@Autowired
+	private ProductViewer pViewer;
 
 	@Autowired
 	CacheManager cacheManager;
@@ -119,6 +127,8 @@ public class HomeController {
 
 	@RequestMapping(value = "/index")
 	public ModelAndView homePage(Model model) {
+		this.expChk = new ExpiryCheck();
+		this.expChk.checkExpiryProducts();
 		model.addAttribute("mobiles", this.ipds.getMobiles());
 		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 		return new ModelAndView("index", "page", "mainBody");
@@ -257,7 +267,7 @@ public class HomeController {
 			model.addAttribute("user", this.userLogin);
 			return new ModelAndView("index", "page", "sellProductInvalid");
 		} else {
-			model.addAttribute("product", this.product);
+			model.addAttribute("product", new Product());
 			return new ModelAndView("index", "page", "sellProduct");
 		}
 	}
@@ -286,12 +296,12 @@ public class HomeController {
 				this.ppService.setProduct(product);
 				this.paidProduct = this.ppService.checkNoOfProductUpload();
 				if (this.paidProduct != null && this.paidProduct.getPaidPrice() != 0) {
-					if (this.ppService.uploadInPaidTable(sess)) {
+					if (/*this.ppService.uploadInPaidTable(sess)*/ true) {
 						System.out.println("paid product upload success");
 						product.setStatus(true);
 						product.setDelDate(this.ppService.getProductDelDate());
-						this.pservice.setProduct(product);
-						this.pservice.registerProduct(photo1, photo2, photo3, session);
+						//this.pservice.setProduct(product);
+						//this.pservice.registerProduct(photo1, photo2, photo3, session);
 						model.addAttribute("paidProduct", this.paidProduct);
 						model.addAttribute("percentageMessage", this.ppService.getPercentageMessage());
 						this.catDisServ.refreshAllProducts();
@@ -345,9 +355,28 @@ public class HomeController {
 		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 		return new ModelAndView("index", "page", "mainBody");
 	}
-
+	
 	@RequestMapping(value = "/singleProduct", method = RequestMethod.GET)
-	public ModelAndView singleProductPage(@RequestParam("product") int id, Model model, Model commentModel) {
+	public ModelAndView singleProductPage(@RequestParam("product") int id, Model model, Model commentModel,HttpSession session) {
+		this.pViewer.setUserCookies(session.getId());
+		this.pViewer.setProductId(id);
+		SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
+        {
+            @Override
+            protected Void doInBackground()
+            {
+            	System.out.println("Running thread.....");
+                pvServ.manageProductViewNumber(pViewer);
+            	return null;
+            }
+
+            @Override
+            protected void done()
+            {
+               System.out.println("Thread ends.");
+            }
+        };
+        worker.execute();
 		this.product = this.pservice.getSingleProduct(id);
 		model.addAttribute("product", this.product);
 		model.addAttribute("specification", this.pservice.getProductSpecifications());
@@ -389,7 +418,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/productReport", method = RequestMethod.POST)
 	public ModelAndView productReportProcess(HttpServletRequest request, HttpSession session,
-			@RequestParam("productId") String productId, @RequestParam("report") String report, Model model) {
+			@RequestParam("productId") String productId, @RequestParam("report") String report, Model model,Model commentModel) {
 		this.product = this.pservice.getSingleProduct(Integer.parseInt(productId));
 		model.addAttribute("product", this.product);
 		model.addAttribute("specification", this.pservice.getProductSpecifications());
@@ -412,6 +441,13 @@ public class HomeController {
 				model.addAttribute("message", this.prServ.uploadReport());
 			}
 		}
+		this.product = this.pservice.getSingleProduct(Integer.parseInt(productId));
+		model.addAttribute("product", this.product);
+		model.addAttribute("specification", this.pservice.getProductSpecifications());
+		model.addAttribute("seller", this.guserv.getUser(this.product.getUserId()));
+		model.addAttribute("comment", this.cmtserv.getComments(Integer.parseInt(productId)));
+		this.comment.setProductId(Integer.parseInt(productId));
+		commentModel.addAttribute("newComment", this.comment);
 		return new ModelAndView("index", "page", "singleProduct");
 	}
 	/* Koju's Portion Ends */
@@ -489,14 +525,21 @@ public class HomeController {
 			this.message.setStatus(true);
 			this.message.setMessage("Your comment contains bad words");
 			model.addAttribute("message", this.message);
-			return new ModelAndView("index", "page", "mainBody");
+			
 		} else {
 			this.message.setStatus(false);
 			this.message.setMessage("Comment uploaded");
 			model.addAttribute("message", this.message);
-			return new ModelAndView("index", "page", "mainBody");
+			
 		}
-
+		//this.product = this.pservice.getSingleProduct(Integer.parseInt(productId));
+		model.addAttribute("product", this.product);
+		model.addAttribute("specification", this.pservice.getProductSpecifications());
+		model.addAttribute("seller", this.guserv.getUser(this.product.getUserId()));
+		model.addAttribute("comment", this.cmtserv.getComments(this.product.getId()));
+		this.comment.setProductId(this.product.getId());
+		commentModel.addAttribute("newComment", this.comment);
+		return new ModelAndView("index", "page", "singleProduct");
 	}
 	/* Unika's Portion Ends */
 

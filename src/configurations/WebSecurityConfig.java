@@ -51,27 +51,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/adminLogout").permitAll()
         .antMatchers("/adminLogin").permitAll()
         .antMatchers("/","/index","/contact","/userLogin","/loginUser","/forgetPassword","/emailValidation",
-        		"/codeValidation",
-        		"/recoverAccount",
-        		"/electronics",
-        		"/computers",
-        		"/mobiles",
-        		"/clothes",
-        		"/cosmetics",
-        		"/others",
-        		"/singleProduct",
-        		"/sellProduct",
-        		"/sellingProduct",
-        		"/paymentSuccess",
-        		"/paymentFailure",
-        		"/singleProduct",
-        		"/logoutUser",
-        		"/userFeedback",
-        		"/productReport",
-        		"/register",
-        		"/processRegister",
-        		"/confirmYourEmail",
-        		"/addComment").permitAll()
+        		"/codeValidation","/recoverAccount","/electronics","/computers",
+        		"/mobiles","/clothes","/cosmetics","/others","/singleProduct",
+        		"/sellProduct","/sellingProduct","/paymentSuccess","/paymentFailure","/singleProduct","/logoutUser",
+        		"/userFeedback","/productReport","/register","/processRegister",
+        		"/confirmYourEmail","/addComment").permitAll()
         .and()  
         .formLogin()  
         .loginPage("/login")  

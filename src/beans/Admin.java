@@ -21,21 +21,26 @@ public class Admin {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="admin_id")
 	private int id;
+	
 	@Column(name="username")
 	@NotEmpty(message="User Name Must Not be Empty..!!!")
 	private String userName;
+	
 	@Column(name="password")
 	@NotEmpty(message="Password Must Not be Empty..!!!")
 	private String pwd;
+	
 	@Column(name="email")
 	@Email
 	@NotEmpty(message="Email Required.!!!")
 	private String email;
+	
 	@Column(name="contact_num")
 	@Size(min=10, max=10, message="invalid format")
 	@Pattern(regexp="^[0-9]*$")
 	@NotEmpty(message="Contact No Required..!!!")
 	private String contactNo;
+	
 	@Column(name="invalid_count")
 	private int invalidCount;
 	public Admin() {

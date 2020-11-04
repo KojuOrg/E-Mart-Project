@@ -29,7 +29,7 @@ public class MostViewedProductService {
 		List<Product> tmp = new ArrayList<Product>();
 		try {
 			this.session.beginTransaction();
-			tmp = this.session.createQuery("FROM Product ORDER BY noOfViews DESC WHERE status=0").list();
+			tmp = this.session.createQuery("FROM Product WHERE status=0 ORDER BY noOfViews DESC ").list();
 			this.session.getTransaction().commit();
 			int j;
 			if(tmp.size()>8) {

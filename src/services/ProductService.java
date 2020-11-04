@@ -181,7 +181,7 @@ public class ProductService {
 			this.session.beginTransaction();
 			this.product = new Product();
 			this.product = (Product)(this.session.get(Product.class,id));
-			this.product.setNoOfViews(this.product.getNoOfViews()+1);
+			//this.product.setNoOfViews(this.product.getNoOfViews()+1);
 			this.session.getTransaction().commit();
 			this.product.setPhoto1(Base64.getEncoder().encodeToString(this.product.getPhoto1File()));
 			this.product.setPhoto2(Base64.getEncoder().encodeToString(this.product.getPhoto2File()));

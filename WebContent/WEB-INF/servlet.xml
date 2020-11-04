@@ -31,7 +31,7 @@
 	<!-- User defined bean -->
 	<!-- Beans added by Koju starts -->
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<beans:property name="maxUploadSize" value="10000000000" />
+		<beans:property name="maxUploadSize" value="3000000" />
 	</beans:bean>
 	<!-- Beans added by koju ends -->
 </beans:beans>

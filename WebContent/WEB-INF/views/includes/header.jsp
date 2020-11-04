@@ -30,7 +30,8 @@
 								Us</a></li>
 						<li class="nav-item"><a class="nav-link" href="sellProduct">Sell
 								Product</a></li>
-						<li class="nav-item submenu dropdown"><a href="#"
+						<c:if test="${empty userName}">
+							<li class="nav-item submenu dropdown"><a href="#"
 							class="nav-link dropdown-toggle" data-toggle="dropdown"
 							role="button" aria-haspopup="true" aria-expanded="false">Account</a>
 							<ul class="dropdown-menu">
@@ -38,6 +39,7 @@
 								<li class="nav-item"><a class="nav-link"
 									href="register">Register</a></li>
 							</ul></li>
+						</c:if>
 						<%
 							String name;
 							if (request.getSession().getAttribute("userName") == null) {

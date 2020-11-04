@@ -36,7 +36,7 @@ public class IndexPageDisplayService {
 		List<Product> products = new ArrayList<Product>();
 		try {
 			this.session.beginTransaction();
-			products = this.session.createQuery("FROM Product WHERE category='Mobiles'").list();
+			products = this.session.createQuery("FROM Product WHERE category='Mobiles' AND status=0").list();
 			this.session.getTransaction().commit();
 			Collections.shuffle(products);
 			for(int i=0;i<products.size();i++) {

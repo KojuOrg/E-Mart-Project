@@ -33,7 +33,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 			break;
 			
 		case "User account is locked":
-			session.setAttribute("loginError", "Due to multiple invalid access your account is locked. Please go through forget password method to recover your account.");
+			session.setAttribute("loginError",
+					"Due to multiple invalid access your account is locked. Please go through forget password method to recover your account.");
 			break;
 		}
 		response.sendRedirect("http://localhost:8080/Emart/login");

@@ -186,7 +186,7 @@
 								<p>You can upload upto 15 products in FREE COST.</p>
 							</li>
 							<li>
-								<p>For uploading products in range 15 - 50 . It costs Rs 30 and product will
+								<p>For uploading products in range 16 - 50 . It costs Rs 30 and product will
 									be kept for 1 month.</p>
 							</li>
 							<li>

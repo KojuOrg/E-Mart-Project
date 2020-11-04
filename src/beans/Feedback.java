@@ -15,27 +15,35 @@ import javax.validation.constraints.Email;
 @Entity
 @Table(name="feedback_details")
 public class Feedback {
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="feedback_id")
 	private int id;
+	
 	@NotEmpty(message="Name Must Not be Empty..!!!")
 	@Column(name="full_name")
 	private String fullName;
+	
 	@Column(name="email")
 	@Email
 	@NotEmpty(message="Email Required.!!!")
 	private String email;
+	
 	@NotEmpty(message="Subject Required..!!!")
 	@Column(name="subject")
 	private String subject;
+	
 	@Column(name="feedback")
 	@NotEmpty(message="Message Must Not be Empty..!!!")
 	private String feedback;
+	
 	@Column(name="reg_date")
 	private String regDate;
+	
 	@Column(name="del_date")
 	private String delDate;
+	
 	@Column(name="status")
 	private boolean status;
 	public Feedback() {

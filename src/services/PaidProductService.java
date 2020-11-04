@@ -67,7 +67,7 @@ public class PaidProductService {
 			this.paidProduct.setUserId(this.product.getUserId());
 			this.paidProduct.setProductId(this.product.getId());
 			this.paidProduct.setProductPrice(Float.parseFloat(this.product.getPrice().toString()));
-			if (this.user.getNumOfUploadedItem() > 15 && this.user.getNumOfUploadedItem() <= 50) {
+			if (this.user.getNumOfUploadedItem() >=15 && this.user.getNumOfUploadedItem() <= 50) {
 				//this.paidPrice = Float.parseFloat(String.format("%.2f", this.paidPrice * 0.03));
 				this.paidPrice = 30;
 				this.paidProduct.setPaidPrice(this.paidPrice);

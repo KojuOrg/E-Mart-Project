@@ -1,9 +1,9 @@
 <c:forEach items="${comment}" var="comment">
 	<div>
 		<p>
-			<b>${comment.userName}</b>${comment.comment}</p>
+			<b style="color:green">${comment.userName} : &emsp;</b><br>${comment.comment}</p>
 		<p>
-			<small>${comment.regDate}</small>
+			<small style="color: blue">${comment.regDate}</small>
 		</p>
 	</div>
 	<hr>

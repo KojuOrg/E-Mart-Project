@@ -47,7 +47,7 @@
 								<input type="hidden" name="reportId" value="${product[5]}" />
 								<input type="hidden" name="productId" value="${product[0]}" />
 								<button type="submit" class="btn btn-danger">
-									<small>Delete</small>
+									<small>Delete Report & Product</small>
 								</button>
 							</form>
 						</div>
