@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Entity
 @Table(name="user")
-public class User {
+public class User1 {
 	
 	@Id //primary key
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //auto increment
@@ -29,7 +29,7 @@ public class User {
 	
 	@Column(name="user_name")
 	@NotEmpty(message="is required")
-	//@UniqueUsername
+	@UniqueUsername
 	private String userName;
 	
 	@Column(name="address")
@@ -39,7 +39,7 @@ public class User {
 	@Column(name="email")
 	@NotEmpty(message="is required")
 	@Email
-	//@UniqueUserEmail
+	@UniqueUserEmail
 	private String email;
 	
 	@Column(name="contact_num")
@@ -76,7 +76,7 @@ public class User {
 		this.invalidCount = invalidCount;
 	}
 
-	public User(int id, String fullName, String userName, String address, String email, String contactNum, String pwd,
+	public User1(int id, String fullName, String userName, String address, String email, String contactNum, String pwd,
 			String regDate, String delDate, int numOfUploadedItem, boolean status) {
 		this.id = id;
 		this.fullName = fullName;
@@ -91,7 +91,7 @@ public class User {
 		this.status = status;
 	}
 	
-	public User() {
+	public User1() {
 		this.id = 0;
 		this.fullName = "";
 		this.userName = "";
@@ -105,7 +105,7 @@ public class User {
 		this.status = false;
 	}
 	
-	public User(User user) {
+	public User1(User1 user) {
 		this.id = user.id;
 		this.fullName = user.fullName;
 		this.userName = user.userName;

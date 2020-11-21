@@ -3,6 +3,7 @@ package services;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -49,7 +50,7 @@ public class UserLoginService {
 			query.setString(0, this.user.getUserName());
 			query.setString(1, this.user.getUserPass());
 			this.tmpUser = new User();
-			this.tmpUser = (User) query.uniqueResult();
+			this.tmpUser = (User)query.uniqueResult();
 			this.session.getTransaction().commit();
 			if (this.tmpUser != null) {
 				if (this.tmpUser.getInvalidCount() >= 5) {

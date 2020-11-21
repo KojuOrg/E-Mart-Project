@@ -140,9 +140,9 @@ public class PaidProductService {
 			this.initPaidProductSession();
 			this.session.beginTransaction();
 			this.paidProduct.setProductId(productId+1);
-			int random = (int) (Math.random() * 99999999 + 1);
-			this.paidProduct.setUniqueCode(this.user.getUserName() + "-"
-					+ new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "-" + random);
+			//int random = (int) (Math.random() * 99999999 + 1);
+//			this.paidProduct.setUniqueCode(this.user.getUserName() + "-"
+//					+ new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "-" + random);
 			this.session.save(this.paidProduct);
 			this.session.getTransaction().commit();
 			status = true;

@@ -36,7 +36,7 @@
 					alt="Image Error" class="img-fluid" style="height:300px;width:auto;"> <a href="singleProduct?product=${mobile.id}"
 					class="hero-carousel__slideOverlay">
 					<h3>${mobile.productName}</h3>
-					<p>Mobiles Item</p>
+					<p>${mobile.category} item</p>
 				</a>
 			</div>
 			</c:forEach>

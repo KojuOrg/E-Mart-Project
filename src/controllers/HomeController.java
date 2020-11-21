@@ -1,7 +1,10 @@
 package controllers;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -12,7 +15,6 @@ import javax.servlet.http.HttpSession;
 import javax.swing.SwingWorker;
 import javax.validation.Valid;
 
-import org.apache.pdfbox.cos.COSOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,7 @@ import beans.Product;
 import beans.ProductReport;
 import beans.ProductViewer;
 import beans.User;
+import beans.User1;
 import beans.UserLogin;
 import services.CategoryDisplayService;
 import services.CommentService;
@@ -47,6 +50,7 @@ import services.PaidProductService;
 import services.ProductReportService;
 import services.ProductService;
 import services.ProductViewerService;
+import services.RecommenderService;
 import services.SendValidationCode;
 import services.UserForgetPassService;
 import services.UserLoginService;
@@ -86,6 +90,8 @@ public class HomeController {
 	private PaidProductService ppService;
 	@Autowired
 	private PaidProduct paidProduct;
+	@Autowired
+	private User1 user1;
 
 	@Autowired
 	private User user;
@@ -103,6 +109,8 @@ public class HomeController {
 	private ProductViewerService pvServ;
 	@Autowired
 	private ProductViewer pViewer;
+	@Autowired
+	private RecommenderService recommenderServ;
 
 	@Autowired
 	CacheManager cacheManager;
@@ -120,16 +128,63 @@ public class HomeController {
 		String path = context.getRealPath("uploads");
 		System.out.println(path);
 		this.expChk.checkExpiryProducts();
-		model.addAttribute("mobiles", this.ipds.getMobiles());
+		//model.addAttribute("mobiles", this.ipds.getMobiles());
+		//HttpSession session=request.getSession();
+		if(session.getAttribute("userName")==null)
+		{
+			model.addAttribute("mobiles",this.ipds.getMobiles());
+		}
+		else
+		{
+			List<String> categories = new ArrayList<String>();
+			List<Product> product1 = new ArrayList<Product>();
+			List<Product> product2 = new ArrayList<Product>();
+			categories=recommenderServ.getCategory((String)session.getAttribute("userName"));
+			System.out.println("categories "+categories);
+			if(categories == null || categories.isEmpty()) {
+				model.addAttribute("mobiles",this.ipds.getPersonalizedCategory("Mobiles"));
+			}
+			else {
+				product1 = this.ipds.getPersonalizedCategory(categories.get(0));
+				product2 = this.ipds.getPersonalizedCategory(categories.get(1));
+				product1.addAll(product2);
+				Collections.shuffle(product1);
+				Collections.shuffle(product1);
+				model.addAttribute("mobiles",product1);
+			}
+		}
 		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 		return new ModelAndView("index", "page", "mainBody");
 	}
 
 	@RequestMapping(value = "/index")
-	public ModelAndView homePage(Model model) {
+	public ModelAndView homePage(Model model,HttpSession session) {
 		this.expChk = new ExpiryCheck();
 		this.expChk.checkExpiryProducts();
-		model.addAttribute("mobiles", this.ipds.getMobiles());
+		//model.addAttribute("mobiles", this.ipds.getMobiles());
+		if(session.getAttribute("userName")==null)
+		{
+			model.addAttribute("mobiles",this.ipds.getMobiles());
+		}
+		else
+		{
+			List<String> categories = new ArrayList<String>();
+			List<Product> product1 = new ArrayList<Product>();
+			List<Product> product2 = new ArrayList<Product>();
+			categories=recommenderServ.getCategory((String)session.getAttribute("userName"));
+			System.out.println("categories "+categories);
+			if(categories == null || categories.isEmpty()) {
+				model.addAttribute("mobiles",this.ipds.getPersonalizedCategory("Mobiles"));
+			}
+			else {
+				product1 = this.ipds.getPersonalizedCategory(categories.get(0));
+				product2 = this.ipds.getPersonalizedCategory(categories.get(1));
+				product1.addAll(product2);
+				Collections.shuffle(product1);
+				Collections.shuffle(product1);
+				model.addAttribute("mobiles",product1);
+			}
+		}
 		model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 		return new ModelAndView("index", "page", "mainBody");
 	}
@@ -149,14 +204,36 @@ public class HomeController {
 
 	@RequestMapping(value = "/loginUser", method = RequestMethod.POST)
 	public ModelAndView userLoginProcess(HttpServletRequest request, @ModelAttribute("user") UserLogin user,
-			Model model) {
+			Model model,HttpSession session) {
 		this.ulserv.setUser(user);
 		this.message = this.ulserv.validateUser(request);
 		model.addAttribute("message", this.message);
 		if (this.message.isStatus()) {
 			return new ModelAndView("index", "page", "userLogin");
 		} else {
-			model.addAttribute("mobiles", this.ipds.getMobiles());
+			if(session.getAttribute("userName")==null)
+			{
+				model.addAttribute("mobiles",this.ipds.getMobiles());
+			}
+			else
+			{
+				List<String> categories = new ArrayList<String>();
+				List<Product> product1 = new ArrayList<Product>();
+				List<Product> product2 = new ArrayList<Product>();
+				categories=recommenderServ.getCategory((String)session.getAttribute("userName"));
+				System.out.println("categories "+categories);
+				if(categories == null || categories.isEmpty()) {
+					model.addAttribute("mobiles",this.ipds.getPersonalizedCategory("Mobiles"));
+				}
+				else {
+					product1 = this.ipds.getPersonalizedCategory(categories.get(0));
+					product2 = this.ipds.getPersonalizedCategory(categories.get(1));
+					product1.addAll(product2);
+					Collections.shuffle(product1);
+					Collections.shuffle(product1);
+					model.addAttribute("mobiles",product1);
+				}
+			}
 			model.addAttribute("mostViewed", this.mvpServ.getMostViewedProducts());
 			return new ModelAndView("index", "page", "mainBody");
 		}
@@ -256,10 +333,11 @@ public class HomeController {
 		return new ModelAndView("index", "page", "others");
 	}
 
-	@RequestMapping(value = "/singleProduct")
-	public ModelAndView singleProductPage() {
-		return new ModelAndView("index", "page", "singleProduct");
-	}
+//	@RequestMapping(value = "/singleProduct")
+//	public ModelAndView singleProductPage(HttpSession session) {
+//		
+//		return new ModelAndView("index", "page", "singleProduct");
+//	}
 
 	@RequestMapping(value = "/sellProduct")
 	public ModelAndView productSellingPage(HttpServletRequest request, Model model) {
@@ -295,6 +373,9 @@ public class HomeController {
 				product.setUserId(Integer.parseInt(session.getAttribute("userId").toString()));
 				this.ppService.setProduct(product);
 				this.paidProduct = this.ppService.checkNoOfProductUpload();
+				int random = (int) (Math.random() * 99999999 + 1);
+				this.paidProduct.setUniqueCode(this.user.getUserName() + "-"
+						+ new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "-" + random);
 				if (this.paidProduct != null && this.paidProduct.getPaidPrice() != 0) {
 					if (/*this.ppService.uploadInPaidTable(sess)*/ true) {
 						System.out.println("paid product upload success");
@@ -384,6 +465,10 @@ public class HomeController {
 		model.addAttribute("comment", this.cmtserv.getComments(id));
 		this.comment.setProductId(id);
 		commentModel.addAttribute("newComment", this.comment);
+		if(session.getAttribute("userName")!=null)
+		{
+			this.recommenderServ.recommender((String)session.getAttribute("userName"), this.product.getCategory());
+		}
 		return new ModelAndView("index", "page", "singleProduct");
 	}
 
@@ -456,12 +541,12 @@ public class HomeController {
 	@RequestMapping(value = "/register")
 	public ModelAndView registerPage(Model userModel) {
 		// userModel.addAttribute("user", new User());
-		userModel.addAttribute("user", this.user);
+		userModel.addAttribute("user",this.user1);
 		return new ModelAndView("index", "page", "register");
 	}
 
 	@RequestMapping(value = "/processRegister")
-	public ModelAndView processForm(@Valid @ModelAttribute("user") User theUser, BindingResult thebindingresult,
+	public ModelAndView processForm(@Valid @ModelAttribute("user") User1 theUser, BindingResult thebindingresult,
 			Model model) throws AddressException, MessagingException {
 		if (thebindingresult.hasErrors()) {
 			// Redirect to form
@@ -474,13 +559,10 @@ public class HomeController {
 				return new ModelAndView("index", "page", "register");
 			}
 			else {
-				message = urserv.register(theUser);
+				this.message = this.urserv.register(theUser);
 				// message=new UserRegister(theUser).register();
 				// model.addAttribute("message", message);
-				if (message.isStatus()) {
-
-					this.message.setStatus(true);
-					this.message.setMessage("Internal Error");
+				if (this.message.isStatus()) {
 					model.addAttribute("message", this.message);
 					return new ModelAndView("index", "page", "register");
 				} else {

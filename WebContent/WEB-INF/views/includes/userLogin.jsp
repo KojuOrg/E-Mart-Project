@@ -21,13 +21,13 @@
 							<form:errors path="userName" cssClass="error"></form:errors>
 							<form:input path="userName" type="text" class="form-control"
 								id="name" placeholder="Username" onfocus="this.placeholder = ''"
-								onblur="this.placeholder = 'Username'" />
+								onblur="this.placeholder = 'Username'" required="required" />
 						</div>
 						<div class="col-md-12 form-group">
 							<form:errors path="userName" cssClass="error"></form:errors>
 							<form:input path="userPass" type="password" class="form-control"
 								id="name" placeholder="Password" onfocus="this.placeholder = ''"
-								onblur="this.placeholder = 'Password'" />
+								onblur="this.placeholder = 'Password'" required="required"/>
 						</div>
 						<!-- <div class="col-md-12 form-group">
 							<div class="creat_account">
